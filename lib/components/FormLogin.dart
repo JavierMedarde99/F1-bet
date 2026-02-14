@@ -48,12 +48,12 @@ class _FormloginState extends State<Formlogin> {
 
             if (usuario.isEmpty || password.isEmpty) return;
 
-            bool isValid = await validateLogin(usuario, password);
-            if (isValid) {
+            int userId = await validateLogin(usuario, password);
+            if (userId != 0) {
               Navigator.push(
                 context,
                 MaterialPageRoute<void>(
-                  builder: (context) => F1page(),
+                  builder: (context) => F1page(userId: userId),
                 ),
               );
             } else {
