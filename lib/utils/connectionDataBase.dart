@@ -13,35 +13,23 @@ Future<void> connectiondatabase() async {
   );
 }
 
-Future<bool> existsBet(int userId, String meetingBet) async {
+Future<Map<String, dynamic>?> getBetForMeeting(
+    int userId, String meetingBet) async {
   try {
     final response = await Supabase.instance.client
         .from('bets')
         .select()
         .eq('user_id', userId)
-        .eq('meeting_bet', meetingBet);
+        .eq('meeting_bet', meetingBet)
+        .maybeSingle();
 
-    return response.isNotEmpty; // Si hay resultados, la apuesta existe
+    return response;
   } catch (error) {
-    print('Error checking bet existence: $error');
-    return false; // En caso de error, asumimos que no existe
+    print('Error fetching bet: $error');
+    return null;
   }
 }
 
-Future<List<Map<String, dynamic>>> getBetsForMeeting(int userId, String meetingBet) async {
-  try {
-    final response = await Supabase.instance.client
-        .from('bets')
-        .select()
-        .eq('user_id', userId)
-        .eq('meeting_bet', meetingBet);
-
-    return List<Map<String, dynamic>>.from(response);
-  } catch (error) {
-    print('Error fetching bets for meeting: $error');
-    return [];
-  }
-}
 
 Future<bool> sendBet(
   int userId,

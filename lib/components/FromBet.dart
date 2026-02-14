@@ -29,15 +29,13 @@ class _FromBetState extends State<FromBet> {
   }
 
   Future<void> _checkIfBetExists() async {
-    bool exists = await existsBet(widget.userId, widget.sessionId);
 
-    if (exists) {
-      List<Map<String, dynamic>> bets =
-          await getBetsForMeeting(widget.userId, widget.sessionId);
+    
+      Map<String, dynamic>? bet = await getBetForMeeting(widget.userId, widget.sessionId);
 
-      if (bets.isNotEmpty) {
-        int? positionAlonso = bets[0]['alonso_position'];
-        int? positionSainz = bets[0]['sainz_position'];
+      if (bet != null) {
+        int? positionAlonso = bet['alonso_position'];
+        int? positionSainz = bet['sainz_position'];
 
         if (positionAlonso != null) {
           betAlonso.text = positionAlonso.toString();
@@ -47,10 +45,10 @@ class _FromBetState extends State<FromBet> {
           betSainz.text = positionSainz.toString();
         }
       }
-    }
+    
 
     setState(() {
-      _isExists = exists;
+      _isExists = bet != null;
       _isLoading = false;
     });
   }
