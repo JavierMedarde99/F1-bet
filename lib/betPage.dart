@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 class Betpage extends StatelessWidget {
 
   final int userId;
-  final String sessionId;
+  final String meetingId;
 
-  Betpage({required this.userId, required this.sessionId});
+  Betpage({required this.userId, required this.meetingId});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class Betpage extends StatelessWidget {
         title: Text("Result Page"),
       ),
       body: Center(
-        child: FromBet(userId: userId, sessionId: sessionId)
+        child: FromBet(userId: userId, meetingId: meetingId)
       ),
     );
   }

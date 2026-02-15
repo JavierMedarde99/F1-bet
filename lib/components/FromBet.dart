@@ -3,12 +3,12 @@ import 'package:f1/utils/connectionDataBase.dart';
 
 class FromBet extends StatefulWidget {
   final int userId;
-  final String sessionId;
+  final String meetingId;
 
   const FromBet({
     Key? key,
     required this.userId,
-    required this.sessionId,
+    required this.meetingId,
   }) : super(key: key);
 
   @override
@@ -31,7 +31,7 @@ class _FromBetState extends State<FromBet> {
   Future<void> _checkIfBetExists() async {
 
     
-      Map<String, dynamic>? bet = await getBetForMeeting(widget.userId, widget.sessionId);
+      Map<String, dynamic>? bet = await getBetForMeetingAndUser(widget.userId, widget.meetingId);
 
       if (bet != null) {
         int? positionAlonso = bet['alonso_position'];
@@ -66,7 +66,7 @@ class _FromBetState extends State<FromBet> {
 
     bool success = await sendBet(
       widget.userId,
-      widget.sessionId,
+      widget.meetingId,
       alonsoPosition,
       sainzPosition,
       _isExists

@@ -1,3 +1,4 @@
+import 'package:f1/models/resultsUser.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -13,7 +14,51 @@ Future<void> connectiondatabase() async {
   );
 }
 
-Future<Map<String, dynamic>?> getBetForMeeting(
+Future<List<ResultsUser>> getBetsForMeeting(String meetingBet) async {
+  try {
+
+    List<ResultsUser> resultsUser = [];
+
+    final response = await Supabase.instance.client
+        .from('bets')
+        .select()
+        .eq('meeting_bet', meetingBet);
+      
+    for (var bet in response) {
+      resultsUser.add(ResultsUser(
+        name: await getName(bet['user_id']),
+        alonsoPosition: bet['alonso_position'],
+        sainzPosition: bet['sainz_position'],
+      ));
+    }
+
+    return resultsUser;
+  } catch (error) {
+    print('Error fetching bets: $error');
+    return [];
+  }
+}
+
+Future<String> getName(int idUser) async {
+  try {
+    final response = await Supabase.instance.client
+        .from('users_f1')
+        .select('user_name')
+        .eq('id', idUser)
+        .maybeSingle();
+    
+    if (response != null && response['user_name'] != null) {
+      return response['user_name'];
+    } else {
+      return 'Usuario desconocido';
+    }
+  } catch (error) {
+    print('Error fetching user name: $error');
+    return 'Usuario desconocido';
+  }
+}
+
+Future<Map<String, dynamic>?> getBetForMeetingAndUser(
     int userId, String meetingBet) async {
   try {
     final response = await Supabase.instance.client
@@ -54,7 +99,7 @@ Future<bool> sendBet(
     }
 
 
-    return true; // Si llega aquí, todo OK
+    return true; 
   } catch (error) {
     print('Error sending bet: $error');
     return false;
@@ -71,7 +116,7 @@ Future<int> validateLogin(String username, String password) async {
       }
     }
 
-    return 0; // No encontró coincidencias
+    return 0; 
   } catch (error) {
     print('Error al obtener usuarios: $error');
     return 0;

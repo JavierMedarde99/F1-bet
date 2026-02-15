@@ -16,14 +16,14 @@ class ListRaces extends StatefulWidget {
 class _ListRacesState extends State<ListRaces> {
   Future<List<Circuit>> circuits = getCircuits();
 
-  ElevatedButton actionCircuit(CircuitsState state, String sessionId) {
+  ElevatedButton actionCircuit(CircuitsState state, String meetingId) {
     switch (state) {
       case CircuitsState.result:
         return ElevatedButton(
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute<void>(builder: (context) => Resultpage()),
+              MaterialPageRoute<void>(builder: (context) => Resultpage(meetingId: meetingId)),
             );
           },
           child: Text("Resultados"),
@@ -33,7 +33,7 @@ class _ListRacesState extends State<ListRaces> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute<void>(builder: (context) => Betpage(userId: widget.userId, sessionId: sessionId)),
+              MaterialPageRoute<void>(builder: (context) => Betpage(userId: widget.userId, meetingId: meetingId)),
             );
           },
           child: Text("Apostar"),
@@ -58,7 +58,7 @@ class _ListRacesState extends State<ListRaces> {
                   children: [
                     Text(data[index].name),
                     Image.network(data[index].imagen),
-                    actionCircuit(data[index].state, data[index].sessionId.toString()),
+                    actionCircuit(data[index].state, data[index].meetingId.toString()),
                   ],
                 );
               },

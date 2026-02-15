@@ -1,15 +1,17 @@
 import 'dart:convert';
 import 'package:f1/models/cicuits.dart';
+import 'package:f1/models/resultsRaces.dart';
+import 'package:f1/utils/constants.dart';
 import 'package:http/http.dart' as http;
 
-const URL_CIRCUITS = 'https://api.openf1.org/v1/meetings?year=';
-const URL_RACES = "https://api.openf1.org/v1/sessions?meeting_key=";
+
 
 Future<List<Circuit>> getCircuits() async {
 
-  DateTime testDate = DateTime(2026, 3, 2); // Cambia esta fecha para probar diferentes escenarios
+  DateTime testDate = DateTime(2025, 4, 22); // Cambia esta fecha para probar diferentes escenarios
+  String testYear = "2025";
 
-  String url = URL_CIRCUITS + DateTime.now().year.toString();
+  String url = URL_CIRCUITS + testYear;
 
   final response = await http.get(Uri.parse(url));
 
@@ -25,16 +27,13 @@ Future<List<Circuit>> getCircuits() async {
         int diference = DateTime.parse(
           circuit['date_end'],
         ).difference(testDate).inDays;
-        int sessionId = await getRace(circuit['meeting_key']);
 
-print(diference);
-
-        if (diference < 0) {
+        if (diference <= 0) {
           circuits.add(
             Circuit(
               circuit['meeting_name'],
               circuit['country_flag'],
-              sessionId,
+              circuit['meeting_key'],
               CircuitsState.result,
             ),
           );
@@ -43,7 +42,7 @@ print(diference);
             Circuit(
               circuit['meeting_name'],
               circuit['country_flag'],
-              sessionId,
+              circuit['meeting_key'],
               CircuitsState.bet,
             ),
           );
@@ -52,7 +51,7 @@ print(diference);
             Circuit(
               circuit['meeting_name'],
               circuit['country_flag'],
-              sessionId,
+              circuit['meeting_key'],
               CircuitsState.future,
             ),
           );
@@ -67,16 +66,40 @@ print(diference);
 }
 
 bool filterCircuits(String name, DateTime dateRaces) {
-  DateTime now = DateTime.now();
-  int nextMonth = now.month == 12 ? 1 : now.month + 1;
-  int nextMonthYear = now.month == 12 ? now.year + 1 : now.year;
-  int previousMonth = now.month == 1 ? 12 : now.month - 1;
-  int previousMonthYear = now.month == 1 ? now.year - 1 : now.year;
-  return !name.contains('Pre-Season') &&
-          (dateRaces.month == now.month && dateRaces.year == now.year) ||
-      (dateRaces.month == nextMonth && dateRaces.year == nextMonthYear) ||
-      (dateRaces.month == previousMonth && dateRaces.year == previousMonthYear);
+  return !name.contains('Pre-Season');
 }
+
+Future<ResultsRaces> getResults(int meetingKey) async {
+  int sessionId = await getRace(meetingKey);
+  int alonsoPosition = await getResultsByDriver(sessionId.toString(), ALONSO_ID);
+  int sainzPosition = await getResultsByDriver(sessionId.toString(), SAINZ_ID);
+
+
+  return 
+    ResultsRaces(
+      alonsoPositionBet: alonsoPosition,
+      sainzPositionBet: sainzPosition,
+    );
+}
+
+Future<int> getResultsByDriver(String sessionId, int driverId) async {
+    String url = URL_RESULTS.replaceAll("{driverId}", driverId.toString()).replaceAll("{sessionId}", sessionId);
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      JsonDecoder decoder = const JsonDecoder();
+      var data = decoder.convert(response.body);
+      if(data.length == 0) {
+        return -1; // No hay resultados para este piloto
+      }
+      if(data[0]['position'] == null) {
+        return -2; // El piloto no terminó la carrera o no tiene posición asignada
+      }
+      return data[0]['position'];
+    } else {
+      print("error to get results by driver: ${response.statusCode}");
+      throw Exception('Failed to load results by driver');
+    }
+  }
 
 Future<int> getRace(int meetingKey) async {
   String url = URL_RACES + meetingKey.toString();

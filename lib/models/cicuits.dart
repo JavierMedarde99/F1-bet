@@ -3,7 +3,7 @@ enum CircuitsState { result, bet, future }
 class Circuit {
   String name;
   String imagen;
-  int sessionId;
+  int meetingId;
   CircuitsState state;
-  Circuit(this.name, this.imagen, this.sessionId, this.state);
+  Circuit(this.name, this.imagen, this.meetingId, this.state);
 }
