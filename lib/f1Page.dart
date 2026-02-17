@@ -11,7 +11,15 @@ class F1page extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("F1 Page"),
+        backgroundColor: Colors.black,
+        title: Text(
+          "F1 all races",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
       ),
       body: Center(
         child: ListRaces(userId: userId,),
