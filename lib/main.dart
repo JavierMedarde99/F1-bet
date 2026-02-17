@@ -1,6 +1,8 @@
 import 'package:f1/components/FormLogin.dart';
 import 'package:f1/utils/connectionDataBase.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 
 Future<void> main() async {
   await connectiondatabase();
@@ -49,6 +51,7 @@ class LoginPage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Icon(FontAwesomeIcons.flagCheckered, size: 50, color: Colors.white),
                   const Text(
                     "F1 APUESTA",
                     style: TextStyle(
@@ -60,16 +63,6 @@ class LoginPage extends StatelessWidget {
                   ),
 
                   const SizedBox(height: 10),
-
-                  const Text(
-                    "Vive la emoción de la Fórmula 1",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white70,
-                    ),
-                  ),
-
-                  const SizedBox(height: 40),
 
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 24),
