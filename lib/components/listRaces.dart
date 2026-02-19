@@ -1,5 +1,5 @@
 import 'package:f1/betPage.dart';
-import 'package:f1/components/CardPage.dart';
+import 'package:f1/components/cardPage.dart';
 import 'package:f1/models/cicuits.dart';
 import 'package:f1/resultPage.dart';
 import 'package:f1/utils/f1Api.dart';
@@ -50,24 +50,24 @@ class _ListRacesState extends State<ListRaces> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFF8B0000), // rojo oscuro
-              Color(0xFFE10600), // rojo F1 intenso
-              Color(0xFF1C1C1C), // negro elegante
-            ],
-          ),
-        ),
-      child: FutureBuilder(
-        future: circuits,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            List<Circuit> data = snapshot.data!;
-            return ListView.builder(
+    return FutureBuilder(
+      future: circuits,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          List<Circuit> data = snapshot.data!;
+          return Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color(0xFF8B0000), // rojo oscuro
+                  Color(0xFFE10600), // rojo F1 intenso
+                  Color(0xFF1C1C1C), // negro elegante
+                ],
+              ),
+            ),
+            child: ListView.builder(
               itemCount: data.length,
               itemBuilder: (context, index) {
                 final circuit = data[index];
@@ -86,16 +86,15 @@ class _ListRacesState extends State<ListRaces> {
                     ),
                   ),
                 );
-          
               },
-            );
-          } else if (snapshot.hasError) {
-            return Text("Error loading circuits, please try again later.");
-          } else {
-            return CircularProgressIndicator();
-          }
-        },
-      ),
+            ),
+          );
+        } else if (snapshot.hasError) {
+          return Text("Error loading circuits, please try again later.");
+        } else {
+          return CircularProgressIndicator();
+        }
+      },
     );
   }
 }

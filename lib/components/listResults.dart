@@ -1,3 +1,4 @@
+import 'package:f1/components/resultF1.dart';
 import 'package:f1/components/tableResults.dart';
 import 'package:f1/models/results.dart';
 import 'package:f1/models/resultsRaces.dart';
@@ -45,33 +46,93 @@ void initState() {
         }
 
         if (snapshot.hasError) {
-          return Container(child: Text("Error: ${snapshot.error}"));
+          return Container(
+            decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(0xFF8B0000), // rojo oscuro
+                Color(0xFFE10600), // rojo F1 intenso
+                Color(0xFF1C1C1C), // negro elegante
+              ],
+            ),
+          ),
+            child: Text("Error: ${snapshot.error}"));
         }
 
         final races = snapshot.data!;
 
         if(races[0].resultsRaces.alonsoPositionBet == -1 || races[0].resultsRaces.sainzPositionBet == -1){
           return Container(
+            decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(0xFF8B0000), // rojo oscuro
+                Color(0xFFE10600), // rojo F1 intenso
+                Color(0xFF1C1C1C), // negro elegante
+              ],
+            ),
+          ),
             child: Text("No hay resultados disponibles"),
           );
         }
 
         if(races[0].resultsRaces.alonsoPositionBet == -2){
           return Container(
+            decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(0xFF8B0000), // rojo oscuro
+                Color(0xFFE10600), // rojo F1 intenso
+                Color(0xFF1C1C1C), // negro elegante
+              ],
+            ),
+          ),
             child: Text("Alonso no terminó la carrera o no tiene posición asignada"),
           );
         }
 
         if(races[0].resultsRaces.sainzPositionBet == -2){
           return Container(
+            decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(0xFF8B0000), // rojo oscuro
+                Color(0xFFE10600), // rojo F1 intenso
+                Color(0xFF1C1C1C), // negro elegante
+              ],
+            ),
+          ),
             child: Text("Sainz no terminó la carrera o no tiene posición asignada"),
           );
         }
 
         return Container(
-          child: Column(children: [Text("Resultados de la carrera: Alonso: ${races[0].resultsRaces.alonsoPositionBet}, Sainz: ${races[0].resultsRaces.sainzPositionBet}"),
-          Tableresults(results: races[0])
-          ],)
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(0xFF8B0000), // rojo oscuro
+                Color(0xFFE10600), // rojo F1 intenso
+                Color(0xFF1C1C1C), // negro elegante
+              ],
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Resultf1(alonsoPosition: races[0].resultsRaces.alonsoPositionBet.toString(), sainzPosition: races[0].resultsRaces.sainzPositionBet.toString()),
+              Tableresults(results: races[0])
+            ],
+          ),
         );
       },
     );

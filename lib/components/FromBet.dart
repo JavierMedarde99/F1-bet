@@ -1,4 +1,4 @@
-import 'package:f1/components/CardPage.dart';
+import 'package:f1/components/cardPage.dart';
 import 'package:flutter/material.dart';
 import 'package:f1/utils/connectionDataBase.dart';
 
