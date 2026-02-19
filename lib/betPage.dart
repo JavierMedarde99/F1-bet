@@ -12,7 +12,7 @@ class Betpage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Result Page"),
+        title: Text("Apuesta F1"),
       ),
       body: Center(
         child: FromBet(userId: userId, meetingId: meetingId)
