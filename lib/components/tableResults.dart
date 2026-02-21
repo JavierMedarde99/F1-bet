@@ -60,9 +60,9 @@ class _TableresultsState extends State<Tableresults> {
             ),
             columns: const <DataColumn>[
               DataColumn(label: Text('Usuario')),
-              DataColumn(label: Text('Apuesta Alonso')),
-              DataColumn(label: Text('Apuesta Sainz')),
-              DataColumn(label: Text('Diferencia Total')),
+              DataColumn(label: Text('Alonso')),
+              DataColumn(label: Text('Sainz')),
+              DataColumn(label: Text('Diferencia')),
             ],
             rows: List.generate(resultTable.length, (index) {
               final result = resultTable[index];

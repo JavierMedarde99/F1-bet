@@ -143,6 +143,30 @@ class _ListresultState extends State<Listresults> {
           );
         }
 
+        if(races[0].resultsUser.isEmpty){
+          return Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color(0xFF8B0000), // rojo oscuro
+                  Color(0xFFE10600), // rojo F1 intenso
+                  Color(0xFF1C1C1C), // negro elegante
+                ],
+              ),
+            ),
+            child: Center(
+              child: Text(
+                "No hay apuestas en esta carrera, no pierde nadie",
+                style: TextStyle(color: Colors.white,fontSize: 25,fontWeight: FontWeight.bold),
+              ),
+            ),
+          );
+        }
+
         return Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
