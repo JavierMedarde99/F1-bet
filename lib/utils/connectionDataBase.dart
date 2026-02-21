@@ -108,17 +108,23 @@ Future<bool> sendBet(
 
 Future<int> validateLogin(String username, String password) async {
   try {
-    final users = await Supabase.instance.client.from('users_f1').select();
+    // Filtramos directamente en la consulta
+    final response = await Supabase.instance.client
+        .from('users_f1')
+        .select('id, password')
+        .eq('user_name', username)
+        .maybeSingle(); // devuelve null si no hay coincidencia
 
-    for (var user in users) {
-      if (user['user_name'] == username && user['password'] == password) {
-        return user['id'];
+    if (response != null) {
+      // Aquí solo verificamos la contraseña localmente si fuera plaintext (no recomendado)
+      if (response['password'] == password) {
+        return response['id'];
       }
     }
 
-    return 0; 
+    return 0;
   } catch (error) {
-    print('Error al obtener usuarios: $error');
+    print('Error al obtener usuario: $error');
     return 0;
   }
 }

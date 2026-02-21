@@ -65,7 +65,8 @@ class _FormloginState extends State<Formlogin> {
                 );
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Credenciales incorrectas')),
+                  
+                  SnackBar(content: Text('Credenciales incorrectas'),backgroundColor: Colors.red,),
                 );
               }
             },
