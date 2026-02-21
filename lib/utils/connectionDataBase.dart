@@ -8,9 +8,24 @@ Future<void> connectiondatabase() async {
 
   await dotenv.load(fileName: ".env");
 
+  // Nullable
+  String? url = dotenv.env['DATABASE_URL'];
+  String? anonKey = dotenv.env['ANON_KEY'];
+
+  // Revisar null o cadena vacía
+  if (url == null || url.isEmpty || anonKey == null || anonKey.isEmpty) {
+    url = const String.fromEnvironment('DATABASE_URL');
+    anonKey = const String.fromEnvironment('ANON_KEY');
+  }
+
+  // Validación final
+  if (url.isEmpty || anonKey.isEmpty) {
+    throw Exception('DATABASE_URL or ANON_KEY no está definido!');
+  }
+
   await Supabase.initialize(
-    url: dotenv.env['DATABASE_URL']!,
-    anonKey: dotenv.env['ANON_KEY']!,
+    url: url,
+    anonKey: anonKey,
   );
 }
 
