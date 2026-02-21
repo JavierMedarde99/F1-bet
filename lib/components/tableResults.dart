@@ -62,7 +62,7 @@ class _TableresultsState extends State<Tableresults> {
               DataColumn(label: Text('Usuario')),
               DataColumn(label: Text('Alonso')),
               DataColumn(label: Text('Sainz')),
-              DataColumn(label: Text('Diferencia')),
+              DataColumn(label: Text('Resto')),
             ],
             rows: List.generate(resultTable.length, (index) {
               final result = resultTable[index];
