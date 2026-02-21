@@ -26,6 +26,7 @@ class _FromBetState extends State<FromBet> {
     _checkIfBetExists();
   }
 
+  // We check the database to see if there is already a saved bet
   Future<void> _checkIfBetExists() async {
     Map<String, dynamic>? bet = await getBetForMeetingAndUser(
       widget.userId,
@@ -51,6 +52,7 @@ class _FromBetState extends State<FromBet> {
     });
   }
 
+  // We send the data to the database, either to insert it or to update it.
   Future<void> _submitBet() async {
     if (betAlonso.text.isEmpty || betSainz.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -105,6 +107,7 @@ class _FromBetState extends State<FromBet> {
       return const Center(child: CircularProgressIndicator());
     }
 
+    // betting form
     return Container(
       color: Colors.black87,
       child: Column(
@@ -145,7 +148,7 @@ class _FromBetState extends State<FromBet> {
                 ),),
             ),
 
-          /// 🚀 BOTÓN
+          // button send bet
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(

@@ -25,7 +25,7 @@ class Resultf1  extends StatelessWidget {
     Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Recuadro Alonso
+        // Alonso Box
         Card(
           elevation: 4,
           shape: RoundedRectangleBorder(
@@ -59,7 +59,7 @@ class Resultf1  extends StatelessWidget {
 
         const SizedBox(width: 20),
 
-        // Recuadro Sainz
+        // Sainz box
         Card(
           elevation: 4,
           shape: RoundedRectangleBorder(

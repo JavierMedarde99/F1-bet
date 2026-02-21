@@ -36,7 +36,7 @@ class _FormloginState extends State<Formlogin> {
           const SizedBox(height: 16),
           TextField(
             controller: passwordController,
-            obscureText: true,
+            obscureText: true, // to input password
             decoration: const InputDecoration(
               labelText: 'Contraseña',
               border: OutlineInputBorder(),
@@ -50,12 +50,15 @@ class _FormloginState extends State<Formlogin> {
               textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             onPressed: () async {
+              //get the value of inputs
               final usuario = usuarioController.text.trim();
               final password = passwordController.text.trim();
 
               if (usuario.isEmpty || password.isEmpty) return;
 
               int userId = await validateLogin(usuario, password);
+
+              // go to the main page 
               if (userId != 0) {
                 Navigator.push(
                   context,
@@ -63,9 +66,10 @@ class _FormloginState extends State<Formlogin> {
                     builder: (context) => F1page(userId: userId),
                   ),
                 );
+
+              //show a error message
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  
                   SnackBar(content: Text('Credenciales incorrectas'),backgroundColor: Colors.red,),
                 );
               }

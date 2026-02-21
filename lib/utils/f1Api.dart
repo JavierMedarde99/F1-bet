@@ -4,14 +4,10 @@ import 'package:f1/models/resultsRaces.dart';
 import 'package:f1/utils/constants.dart';
 import 'package:http/http.dart' as http;
 
-
-
+// Obtain all the circuits for this year, obtaining only the flag, the id and the name
 Future<List<Circuit>> getCircuits() async {
 
-  DateTime testDate = DateTime(2025, 4, 30); // Cambia esta fecha para probar diferentes escenarios
-  String testYear = "2025";
-
-  String url = URL_CIRCUITS + testYear;
+  String url = URL_CIRCUITS + DateTime.now().year.toString();
 
   final response = await http.get(Uri.parse(url));
 
@@ -26,7 +22,7 @@ Future<List<Circuit>> getCircuits() async {
       )) {
         int diference = DateTime.parse(
           circuit['date_end'],
-        ).difference(testDate).inDays;
+        ).difference(DateTime.now()).inDays;
 
         if (diference <= 0) {
           circuits.add(
@@ -65,10 +61,12 @@ Future<List<Circuit>> getCircuits() async {
   return circuits;
 }
 
+// We removed the Preseason races because there are no bets on those types of races.
 bool filterCircuits(String name, DateTime dateRaces) {
   return !name.contains('Pre-Season');
 }
 
+// We obtain the final position of Alonso and Sains
 Future<ResultsRaces> getResults(int meetingKey) async {
   int sessionId = await getRace(meetingKey);
   int alonsoPosition = await getResultsByDriver(sessionId.toString(), ALONSO_ID);
@@ -82,6 +80,7 @@ Future<ResultsRaces> getResults(int meetingKey) async {
     );
 }
 
+// We obtain the final position of a driver
 Future<int> getResultsByDriver(String sessionId, int driverId) async {
     String url = URL_RESULTS.replaceAll("{driverId}", driverId.toString()).replaceAll("{sessionId}", sessionId);
     final response = await http.get(Uri.parse(url));
@@ -101,6 +100,7 @@ Future<int> getResultsByDriver(String sessionId, int driverId) async {
     }
   }
 
+// We obtain the race ID
 Future<int> getRace(int meetingKey) async {
   String url = URL_RACES + meetingKey.toString();
 

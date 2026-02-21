@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 
 Future<void> main() async {
+  // conection to SupaBase
   await connectiondatabase();
 
   runApp(const MyApp());
@@ -23,6 +24,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
+// The homepage is the login page to access the website
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
@@ -33,14 +36,14 @@ class LoginPage extends StatelessWidget {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
+        decoration: const BoxDecoration( // gradient to red
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color(0xFF8B0000), // rojo oscuro
-              Color(0xFFE10600), // rojo F1 intenso
-              Color(0xFF1C1C1C), // negro elegante
+              Color(0xFF8B0000), 
+              Color(0xFFE10600), 
+              Color(0xFF1C1C1C), 
             ],
           ),
         ),

@@ -1,7 +1,7 @@
 import 'package:f1/components/listRaces.dart';
 import 'package:flutter/material.dart';
 
-
+//main page
 class F1page extends StatelessWidget {
 
   final int userId;

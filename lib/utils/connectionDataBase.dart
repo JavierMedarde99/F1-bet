@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+// conection to the dataBase
 Future<void> connectiondatabase() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -29,6 +30,7 @@ Future<void> connectiondatabase() async {
   );
 }
 
+// get all the bets on a race
 Future<List<ResultsUser>> getBetsForMeeting(String meetingBet) async {
   try {
 
@@ -54,6 +56,7 @@ Future<List<ResultsUser>> getBetsForMeeting(String meetingBet) async {
   }
 }
 
+// get a user's name
 Future<String> getName(int idUser) async {
   try {
     final response = await Supabase.instance.client
@@ -73,6 +76,7 @@ Future<String> getName(int idUser) async {
   }
 }
 
+//to obtain a bet on a specific race and user
 Future<Map<String, dynamic>?> getBetForMeetingAndUser(
     int userId, String meetingBet) async {
   try {
@@ -90,7 +94,7 @@ Future<Map<String, dynamic>?> getBetForMeetingAndUser(
   }
 }
 
-
+// insert or update bet
 Future<bool> sendBet(
   int userId,
   String meetingBet,
@@ -121,6 +125,7 @@ Future<bool> sendBet(
   }
 }
 
+// check if the username and password exist in the database
 Future<int> validateLogin(String username, String password) async {
   try {
     // Filtramos directamente en la consulta

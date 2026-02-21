@@ -16,6 +16,7 @@ class ListRaces extends StatefulWidget {
 class _ListRacesState extends State<ListRaces> {
   Future<List<Circuit>> circuits = getCircuits();
 
+// Depending on the race status, a button will be created for the following two actions: betting or viewing results.
   ElevatedButton actionCircuit(CircuitsState state, String meetingId) {
     switch (state) {
       case CircuitsState.result:
@@ -57,13 +58,13 @@ class _ListRacesState extends State<ListRaces> {
           List<Circuit> data = snapshot.data!;
           return Container(
             decoration: const BoxDecoration(
-              gradient: LinearGradient(
+              gradient: LinearGradient( // gradient to red
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Color(0xFF8B0000), // rojo oscuro
-                  Color(0xFFE10600), // rojo F1 intenso
-                  Color(0xFF1C1C1C), // negro elegante
+                  Color(0xFF8B0000), 
+                  Color(0xFFE10600), 
+                  Color(0xFF1C1C1C), 
                 ],
               ),
             ),
