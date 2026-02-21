@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 
 Future<List<Circuit>> getCircuits() async {
 
-  DateTime testDate = DateTime(2025, 3, 31); // Cambia esta fecha para probar diferentes escenarios
+  DateTime testDate = DateTime(2025, 4, 30); // Cambia esta fecha para probar diferentes escenarios
   String testYear = "2025";
 
   String url = URL_CIRCUITS + testYear;
