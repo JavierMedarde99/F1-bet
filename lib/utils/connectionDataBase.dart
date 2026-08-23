@@ -31,6 +31,9 @@ Future<void> connectiondatabase() async {
 }
 
 // get all the bets on a race
+// NOTE: meetingBet is a String (OpenF1 meeting_key as text). If the
+// meeting_bet column in Supabase is numeric, these queries will fail
+// silently - see supabase/verify_meeting_bet_type.sql to check it.
 Future<List<ResultsUser>> getBetsForMeeting(String meetingBet) async {
   try {
 
