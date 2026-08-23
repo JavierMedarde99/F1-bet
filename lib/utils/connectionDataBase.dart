@@ -125,7 +125,16 @@ Future<bool> sendBet(
   }
 }
 
-// check if the username and password exist in the database
+// WARNING (SECURITY): passwords are stored AND compared in plaintext in
+// the users_f1 table. If the database is ever exposed, every user's
+// credentials are compromised. This is a known critical vulnerability.
+//
+// Recommended remediation (not implemented yet - tracked in issue #1):
+//   1. Preferred: migrate to Supabase Auth (supabase.auth.signInWithPassword),
+//      which handles secure hashing, recovery and email verification.
+//   2. Alternative: keep users_f1 but store a hash (bcrypt/argon2) instead
+//      of the raw password, hashing on registration and verifying on login.
+// Any fix requires a data migration of the existing rows.
 Future<int> validateLogin(String username, String password) async {
   try {
     // Filtramos directamente en la consulta
@@ -136,7 +145,7 @@ Future<int> validateLogin(String username, String password) async {
         .maybeSingle(); // devuelve null si no hay coincidencia
 
     if (response != null) {
-      // Aquí solo verificamos la contraseña localmente si fuera plaintext (no recomendado)
+      // PLAINTEXT COMPARISON - insecure, see warning above
       if (response['password'] == password) {
         return response['id'];
       }
