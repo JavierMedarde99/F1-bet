@@ -14,7 +14,7 @@ class Resultpage extends StatelessWidget {
         title: Text("Result Page"),
       ),
       body: Center(
-        child: Listresults(meetingKey: int.parse(meetingId)),
+        child: ListResults(meetingKey: int.parse(meetingId)),
       ),
     );
   }

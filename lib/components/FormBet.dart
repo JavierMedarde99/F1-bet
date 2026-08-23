@@ -2,18 +2,18 @@ import 'package:f1/components/cardPage.dart';
 import 'package:flutter/material.dart';
 import 'package:f1/utils/connectionDataBase.dart';
 
-class FromBet extends StatefulWidget {
+class FormBet extends StatefulWidget {
   final int userId;
   final String meetingId;
 
-  const FromBet({Key? key, required this.userId, required this.meetingId})
+  const FormBet({Key? key, required this.userId, required this.meetingId})
     : super(key: key);
 
   @override
-  State<FromBet> createState() => _FromBetState();
+  State<FormBet> createState() => _FormBetState();
 }
 
-class _FromBetState extends State<FromBet> {
+class _FormBetState extends State<FormBet> {
   final TextEditingController betAlonso = TextEditingController();
   final TextEditingController betSainz = TextEditingController();
 

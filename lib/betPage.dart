@@ -1,4 +1,4 @@
-import 'package:f1/components/FromBet.dart';
+import 'package:f1/components/FormBet.dart';
 import 'package:flutter/material.dart';
 
 class Betpage extends StatelessWidget {
@@ -15,7 +15,7 @@ class Betpage extends StatelessWidget {
         title: Text("Apuesta F1"),
       ),
       body: Center(
-        child: FromBet(userId: userId, meetingId: meetingId)
+        child: FormBet(userId: userId, meetingId: meetingId)
       ),
     );
   }

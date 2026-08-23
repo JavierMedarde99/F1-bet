@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class Resultf1  extends StatelessWidget {
+class ResultF1  extends StatelessWidget {
 
   final String alonsoPosition;
   final String sainzPosition;
 
-  Resultf1({required this.alonsoPosition, required this.sainzPosition});
+  ResultF1({required this.alonsoPosition, required this.sainzPosition});
 
   @override
   Widget build(BuildContext context) {

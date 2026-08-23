@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:f1/models/cicuits.dart';
+import 'package:f1/models/circuits.dart';
 import 'package:f1/models/resultsRaces.dart';
 import 'package:f1/utils/constants.dart';
 import 'package:http/http.dart' as http;
