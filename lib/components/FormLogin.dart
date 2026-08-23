@@ -54,7 +54,15 @@ class _FormloginState extends State<Formlogin> {
               final usuario = usuarioController.text.trim();
               final password = passwordController.text.trim();
 
-              if (usuario.isEmpty || password.isEmpty) return;
+              if (usuario.isEmpty || password.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Por favor, rellena todos los campos'),
+                    backgroundColor: Colors.orange,
+                  ),
+                );
+                return;
+              }
 
               int userId = await validateLogin(usuario, password);
 
