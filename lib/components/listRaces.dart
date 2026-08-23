@@ -1,5 +1,6 @@
 import 'package:f1/betPage.dart';
 import 'package:f1/components/cardPage.dart';
+import 'package:f1/components/errorRetry.dart';
 import 'package:f1/models/cicuits.dart';
 import 'package:f1/resultPage.dart';
 import 'package:f1/utils/f1Api.dart';
@@ -15,6 +16,14 @@ class ListRaces extends StatefulWidget {
 
 class _ListRacesState extends State<ListRaces> {
   Future<List<Circuit>> circuits = getCircuits();
+
+  // Reintenta la carga de circuitos
+  Future<void> _retryLoad() async {
+    final future = getCircuits();
+    setState(() {
+      circuits = future;
+    });
+  }
 
 // Depending on the race status, a button will be created for the following two actions: betting or viewing results.
   ElevatedButton actionCircuit(CircuitsState state, String meetingId) {
@@ -91,7 +100,10 @@ class _ListRacesState extends State<ListRaces> {
             ),
           );
         } else if (snapshot.hasError) {
-          return Text("Error loading circuits, please try again later.");
+          return Errorretry(
+            message: "Error loading circuits, please try again.",
+            onRetry: _retryLoad,
+          );
         } else {
           return CircularProgressIndicator();
         }
