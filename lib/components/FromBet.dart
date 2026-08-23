@@ -1,5 +1,6 @@
 import 'package:f1/components/cardPage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:f1/utils/connectionDataBase.dart';
 
 class FromBet extends StatefulWidget {
@@ -120,6 +121,7 @@ class _FromBetState extends State<FromBet> {
               container: Container(child: TextField(
                   controller: betAlonso,
                   keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
@@ -137,6 +139,7 @@ class _FromBetState extends State<FromBet> {
               container: Container(child: TextField(
                   controller: betSainz,
                   keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
