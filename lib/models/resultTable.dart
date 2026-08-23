@@ -4,7 +4,7 @@ class ResultTable {
   final int positionSainz;
   final int totalDifferense;
 
-  ResultTable({
+  const ResultTable({
     required this.name,
     required this.positionAlonso,
     required this.positionSainz,

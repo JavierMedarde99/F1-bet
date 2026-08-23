@@ -3,7 +3,7 @@ class ResultsUser {
   final int alonsoPosition;
   final int sainzPosition;
 
-  ResultsUser({
+  const ResultsUser({
     required this.name,
     required this.alonsoPosition,
     required this.sainzPosition,

@@ -1,8 +1,8 @@
 class ResultsRaces {
-  int alonsoPositionBet;
-  int sainzPositionBet;
+  final int alonsoPositionBet;
+  final int sainzPositionBet;
 
-  ResultsRaces({
+  const ResultsRaces({
     required this.alonsoPositionBet,
     required this.sainzPositionBet,
   });
