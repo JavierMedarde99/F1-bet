@@ -64,6 +64,20 @@ class _FromBetState extends State<FromBet> {
     int alonsoPosition = int.tryParse(betAlonso.text) ?? 0;
     int sainzPosition = int.tryParse(betSainz.text) ?? 0;
 
+    // En F1 solo hay 20 pilotos: la posición válida es 1-20
+    if (alonsoPosition < 1 ||
+        alonsoPosition > 20 ||
+        sainzPosition < 1 ||
+        sainzPosition > 20) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Las posiciones deben estar entre 1 y 20'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
     bool success = await sendBet(
       widget.userId,
       widget.meetingId,
