@@ -1,6 +1,6 @@
 import 'package:f1/betPage.dart';
 import 'package:f1/components/cardPage.dart';
-import 'package:f1/components/errorRetry.dart';
+import 'package:f1/components/error_retry.dart';
 import 'package:f1/models/cicuits.dart';
 import 'package:f1/resultPage.dart';
 import 'package:f1/utils/f1Api.dart';

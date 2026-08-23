@@ -1,4 +1,4 @@
-import 'package:f1/components/errorRetry.dart';
+import 'package:f1/components/error_retry.dart';
 import 'package:f1/components/resultF1.dart';
 import 'package:f1/components/tableResults.dart';
 import 'package:f1/models/results.dart';
