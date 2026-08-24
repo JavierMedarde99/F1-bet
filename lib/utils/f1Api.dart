@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:f1/models/cicuits.dart';
+import 'package:f1/models/circuits.dart';
 import 'package:f1/models/resultsRaces.dart';
 import 'package:f1/utils/constants.dart';
 import 'package:http/http.dart' as http;
@@ -20,11 +20,11 @@ Future<List<Circuit>> getCircuits() async {
         circuit['meeting_name'],
         DateTime.parse(circuit['date_end']),
       )) {
-        int diference = DateTime.parse(
+        int difference = DateTime.parse(
           circuit['date_end'],
         ).difference(DateTime.now()).inDays;
 
-        if (diference <= 0) {
+        if (difference <= 0) {
           circuits.add(
             Circuit(
               circuit['meeting_name'],
@@ -33,7 +33,7 @@ Future<List<Circuit>> getCircuits() async {
               CircuitsState.result,
             ),
           );
-        } else if (diference < 7 && diference >= 3) {
+        } else if (difference < 7) {
           circuits.add(
             Circuit(
               circuit['meeting_name'],
@@ -108,6 +108,9 @@ Future<int> getRace(int meetingKey) async {
   if (response.statusCode == 200) {
     JsonDecoder decoder = const JsonDecoder();
     var data = decoder.convert(response.body);
+    if (data.isEmpty) {
+      throw Exception('No sessions found for meeting $meetingKey');
+    }
     return data[data.length - 1]['session_key'];
   } else {
     print("error to get races: ${response.statusCode}");

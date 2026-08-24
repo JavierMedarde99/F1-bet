@@ -1,7 +1,7 @@
 import 'package:f1/betPage.dart';
 import 'package:f1/components/cardPage.dart';
 import 'package:f1/components/error_retry.dart';
-import 'package:f1/models/cicuits.dart';
+import 'package:f1/models/circuits.dart';
 import 'package:f1/resultPage.dart';
 import 'package:f1/utils/f1Api.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +15,23 @@ class ListRaces extends StatefulWidget {
 }
 
 class _ListRacesState extends State<ListRaces> {
-  Future<List<Circuit>> circuits = getCircuits();
+  late Future<List<Circuit>> circuits;
+
+  @override
+  void initState() {
+    super.initState();
+    circuits = getCircuits();
+  }
+
+  // Recarga la lista de circuitos; el FutureBuilder muestra el spinner
+  // hasta que el nuevo Future termina.
+  Future<void> _reloadCircuits() {
+    final future = getCircuits();
+    setState(() {
+      circuits = future;
+    });
+    return future;
+  }
 
   // Reintenta la carga de circuitos
   Future<void> _retryLoad() async {
@@ -77,7 +93,9 @@ class _ListRacesState extends State<ListRaces> {
                 ],
               ),
             ),
-            child: ListView.builder(
+            child: RefreshIndicator(
+              onRefresh: _reloadCircuits,
+              child: ListView.builder(
               itemCount: data.length,
               itemBuilder: (context, index) {
                 final circuit = data[index];
@@ -87,6 +105,19 @@ class _ListRacesState extends State<ListRaces> {
                     circuit.imagen,
                     height: double.infinity,
                     fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(
+                        Icons.error_outline,
+                        size: 48,
+                        color: Colors.grey,
+                      );
+                    },
                   ),
                   text: circuit.name,
                   container: Container(
@@ -97,6 +128,7 @@ class _ListRacesState extends State<ListRaces> {
                   ),
                 );
               },
+              ),
             ),
           );
         } else if (snapshot.hasError) {

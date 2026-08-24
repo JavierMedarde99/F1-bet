@@ -8,15 +8,15 @@ import 'package:f1/utils/connectionDataBase.dart';
 import 'package:f1/utils/f1Api.dart';
 import 'package:flutter/material.dart';
 
-class Listresults extends StatefulWidget {
+class ListResults extends StatefulWidget {
   final int meetingKey;
-  Listresults({required this.meetingKey});
+  ListResults({required this.meetingKey});
 
   @override
-  _ListresultState createState() => _ListresultState();
+  _ListResultsState createState() => _ListResultsState();
 }
 
-class _ListresultState extends State<Listresults> {
+class _ListResultsState extends State<ListResults> {
   late Future<List<Results>> results;
 
   @override
@@ -174,13 +174,13 @@ class _ListresultState extends State<Listresults> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Resultf1(
+              ResultF1(
                 alonsoPosition: races[0].resultsRaces.alonsoPositionBet
                     .toString(),
                 sainzPosition: races[0].resultsRaces.sainzPositionBet
                     .toString(),
               ),
-              Tableresults(results: races[0]),
+              TableResults(results: races[0]),
             ],
           ),
         );

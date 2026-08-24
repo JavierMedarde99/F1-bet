@@ -1,19 +1,20 @@
 import 'package:f1/components/cardPage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:f1/utils/connectionDataBase.dart';
 
-class FromBet extends StatefulWidget {
+class FormBet extends StatefulWidget {
   final int userId;
   final String meetingId;
 
-  const FromBet({Key? key, required this.userId, required this.meetingId})
+  const FormBet({Key? key, required this.userId, required this.meetingId})
     : super(key: key);
 
   @override
-  State<FromBet> createState() => _FromBetState();
+  State<FormBet> createState() => _FormBetState();
 }
 
-class _FromBetState extends State<FromBet> {
+class _FormBetState extends State<FormBet> {
   final TextEditingController betAlonso = TextEditingController();
   final TextEditingController betSainz = TextEditingController();
 
@@ -63,6 +64,20 @@ class _FromBetState extends State<FromBet> {
 
     int alonsoPosition = int.tryParse(betAlonso.text) ?? 0;
     int sainzPosition = int.tryParse(betSainz.text) ?? 0;
+
+    // En F1 solo hay 20 pilotos: la posición válida es 1-20
+    if (alonsoPosition < 1 ||
+        alonsoPosition > 20 ||
+        sainzPosition < 1 ||
+        sainzPosition > 20) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Las posiciones deben estar entre 1 y 20'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
 
     bool success = await sendBet(
       widget.userId,
@@ -115,11 +130,17 @@ class _FromBetState extends State<FromBet> {
         children: [
         
           Cardpage(
-              image: Image.asset('assets/images/alonso.jpg'),
+              image: Image.asset(
+                'assets/images/alonso.jpg',
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(Icons.person, size: 64);
+                },
+              ),
               text: "apuesta a alonso",
               container: Container(child: TextField(
                   controller: betAlonso,
                   keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
@@ -132,11 +153,17 @@ class _FromBetState extends State<FromBet> {
             ),
 
             Cardpage(
-              image: Image.asset('assets/images/sainz.jpg'),
+              image: Image.asset(
+                'assets/images/sainz.jpg',
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(Icons.person, size: 64);
+                },
+              ),
               text: "apuesta a sainz",
               container: Container(child: TextField(
                   controller: betSainz,
                   keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,

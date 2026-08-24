@@ -9,12 +9,16 @@ class Resultpage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final int? meetingKey = int.tryParse(meetingId);
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Result Page"),
       ),
       body: Center(
-        child: Listresults(meetingKey: int.parse(meetingId)),
+        child: meetingKey == null
+            ? const Text('ID de carrera inválido')
+            : ListResults(meetingKey: meetingKey),
       ),
     );
   }
