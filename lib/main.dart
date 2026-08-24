@@ -54,7 +54,7 @@ class LoginPage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(FontAwesomeIcons.flagCheckered, size: 50, color: Colors.white),
+                  FaIcon(FontAwesomeIcons.flagCheckered, size: 50, color: Colors.white),
                   const Text(
                     "F1 APUESTA",
                     style: TextStyle(
