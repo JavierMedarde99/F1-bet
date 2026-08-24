@@ -1,5 +1,6 @@
 import 'package:f1/components/cardPage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:f1/utils/connectionDataBase.dart';
 
 class FormBet extends StatefulWidget {
@@ -64,6 +65,20 @@ class _FormBetState extends State<FormBet> {
     int alonsoPosition = int.tryParse(betAlonso.text) ?? 0;
     int sainzPosition = int.tryParse(betSainz.text) ?? 0;
 
+    // En F1 solo hay 20 pilotos: la posición válida es 1-20
+    if (alonsoPosition < 1 ||
+        alonsoPosition > 20 ||
+        sainzPosition < 1 ||
+        sainzPosition > 20) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Las posiciones deben estar entre 1 y 20'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
     bool success = await sendBet(
       widget.userId,
       widget.meetingId,
@@ -115,11 +130,17 @@ class _FormBetState extends State<FormBet> {
         children: [
         
           Cardpage(
-              image: Image.asset('assets/images/alonso.jpg'),
+              image: Image.asset(
+                'assets/images/alonso.jpg',
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(Icons.person, size: 64);
+                },
+              ),
               text: "apuesta a alonso",
               container: Container(child: TextField(
                   controller: betAlonso,
                   keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
@@ -132,11 +153,17 @@ class _FormBetState extends State<FormBet> {
             ),
 
             Cardpage(
-              image: Image.asset('assets/images/sainz.jpg'),
+              image: Image.asset(
+                'assets/images/sainz.jpg',
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(Icons.person, size: 64);
+                },
+              ),
               text: "apuesta a sainz",
               container: Container(child: TextField(
                   controller: betSainz,
                   keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,

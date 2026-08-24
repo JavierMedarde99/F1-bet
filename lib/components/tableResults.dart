@@ -13,8 +13,8 @@ class TableResults extends StatefulWidget {
 
 class _TableResultsState extends State<TableResults> {
 
-  int getDifferense(int alonsoPosition, int sainzPosition, int alonsopositionBet, int sainzPositionBet) {
-    int differenseAlonso = (alonsopositionBet - alonsoPosition).abs();
+  int getDifferense(int alonsoPosition, int sainzPosition, int alonsoPositionBet, int sainzPositionBet) {
+    int differenseAlonso = (alonsoPositionBet - alonsoPosition).abs();
     int differenseSainz = (sainzPositionBet - sainzPosition).abs();
     return differenseAlonso + differenseSainz;
   }
@@ -32,7 +32,8 @@ class _TableResultsState extends State<TableResults> {
       ),
     )).toList();
 
-    list.sort((a, b) => b.totalDifferense.compareTo(a.totalDifferense));
+    // El ganador es quien tiene MENOR diferencia con el resultado real
+    list.sort((a, b) => a.totalDifferense.compareTo(b.totalDifferense));
 
     return list;
   }
@@ -71,9 +72,9 @@ class _TableResultsState extends State<TableResults> {
                 color: WidgetStateProperty.resolveWith<Color?>(
                   (Set<WidgetState> states) {
                     if (index == 0) {
-                      return Colors.red; // Primera fila roja
+                      return Colors.green; // Ganador: menor diferencia
                     }
-                    return Colors.green; // Resto verdes
+                    return null;
                   },
                 ),
                 cells: [
