@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -33,8 +36,22 @@ jobs:
       - name: Build APK
         run: flutter build apk --release
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+      - name: Rename APK
+        run: |
+          mv build/app/outputs/flutter-apk/app-release.apk \
+             build/app/outputs/flutter-apk/app-latest.apk
+
+      - name: Update Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: flutter-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          tag_name: latest
+          name: Latest
+          body: |
+            APK generado automáticamente desde la rama main.
+
+            Commit: ${{ github.sha }}
+          files: build/app/outputs/flutter-apk/app-latest.apk
+          prerelease: true
+          make_latest: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
