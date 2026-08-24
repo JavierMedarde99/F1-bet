@@ -130,7 +130,12 @@ class _FromBetState extends State<FromBet> {
         children: [
         
           Cardpage(
-              image: Image.asset('assets/images/alonso.jpg'),
+              image: Image.asset(
+                'assets/images/alonso.jpg',
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(Icons.person, size: 64);
+                },
+              ),
               text: "apuesta a alonso",
               container: Container(child: TextField(
                   controller: betAlonso,
@@ -148,7 +153,12 @@ class _FromBetState extends State<FromBet> {
             ),
 
             Cardpage(
-              image: Image.asset('assets/images/sainz.jpg'),
+              image: Image.asset(
+                'assets/images/sainz.jpg',
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(Icons.person, size: 64);
+                },
+              ),
               text: "apuesta a sainz",
               container: Container(child: TextField(
                   controller: betSainz,

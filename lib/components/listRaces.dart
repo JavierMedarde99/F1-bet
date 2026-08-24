@@ -78,6 +78,19 @@ class _ListRacesState extends State<ListRaces> {
                     circuit.imagen,
                     height: double.infinity,
                     fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(
+                        Icons.error_outline,
+                        size: 48,
+                        color: Colors.grey,
+                      );
+                    },
                   ),
                   text: circuit.name,
                   container: Container(
