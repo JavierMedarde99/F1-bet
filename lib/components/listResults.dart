@@ -1,3 +1,4 @@
+import 'package:f1/components/error_retry.dart';
 import 'package:f1/components/resultF1.dart';
 import 'package:f1/components/tableResults.dart';
 import 'package:f1/models/results.dart';
@@ -21,18 +22,22 @@ class _ListResultsState extends State<ListResults> {
   @override
   void initState() {
     super.initState();
-    results =
-        Future.wait([
-          getResults(widget.meetingKey),
-          getBetsForMeeting(widget.meetingKey.toString()),
-        ]).then((results) {
-          return [
-            Results(
-              resultsRaces: results[0] as ResultsRaces,
-              resultsUser: results[1] as List<ResultsUser>,
-            ),
-          ];
-        });
+    _loadResults();
+  }
+
+  // Carga (o recarga) los resultados de la carrera
+  void _loadResults() {
+    results = Future.wait([
+      getResults(widget.meetingKey),
+      getBetsForMeeting(widget.meetingKey.toString()),
+    ]).then((results) {
+      return [
+        Results(
+          resultsRaces: results[0] as ResultsRaces,
+          resultsUser: results[1] as List<ResultsUser>,
+        ),
+      ];
+    });
   }
 
   @override
@@ -45,26 +50,13 @@ class _ListResultsState extends State<ListResults> {
         }
 
         if (snapshot.hasError) {
-          return Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: const BoxDecoration( // gradient to red
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFF8B0000), 
-                  Color(0xFFE10600), 
-                  Color(0xFF1C1C1C), 
-                ],
-              ),
-            ),
-            child: Center(
-              child: Text(
-                "Error: ${snapshot.error}",
-                style: TextStyle(color: Colors.white,fontSize: 25,fontWeight: FontWeight.bold),
-              ),
-            ),
+          return Errorretry(
+            message: "Error: ${snapshot.error}",
+            onRetry: () async {
+              setState(() {
+                _loadResults();
+              });
+            },
           );
         }
 
