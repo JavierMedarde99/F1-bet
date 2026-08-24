@@ -23,6 +23,13 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Create .env
+        run: |
+          cat > .env <<EOF
+          DATABASE_URL=${{ secrets.DATABASE_URL }}
+          ANON_KEY=${{ secrets.ANON_KEY }}
+          EOF
+
       - name: Build APK
         run: flutter build apk --release
 
