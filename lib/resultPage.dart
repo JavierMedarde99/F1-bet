@@ -18,7 +18,7 @@ class Resultpage extends StatelessWidget {
       body: Center(
         child: meetingKey == null
             ? const Text('ID de carrera inválido')
-            : Listresults(meetingKey: meetingKey),
+            : ListResults(meetingKey: meetingKey),
       ),
     );
   }

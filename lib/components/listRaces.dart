@@ -1,6 +1,6 @@
 import 'package:f1/betPage.dart';
 import 'package:f1/components/cardPage.dart';
-import 'package:f1/models/cicuits.dart';
+import 'package:f1/models/circuits.dart';
 import 'package:f1/resultPage.dart';
 import 'package:f1/utils/f1Api.dart';
 import 'package:flutter/material.dart';

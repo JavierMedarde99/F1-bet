@@ -2,16 +2,16 @@ import 'package:f1/models/resultTable.dart';
 import 'package:f1/models/results.dart';
 import 'package:flutter/material.dart';
 
-class Tableresults extends StatefulWidget {
+class TableResults extends StatefulWidget {
   final Results results;
 
-  const Tableresults({Key? key, required this.results}) : super(key: key);
+  const TableResults({Key? key, required this.results}) : super(key: key);
 
   @override
-  _TableresultsState createState() => _TableresultsState();
+  _TableResultsState createState() => _TableResultsState();
 }
 
-class _TableresultsState extends State<Tableresults> {
+class _TableResultsState extends State<TableResults> {
 
   int getDifferense(int alonsoPosition, int sainzPosition, int alonsoPositionBet, int sainzPositionBet) {
     int differenseAlonso = (alonsoPositionBet - alonsoPosition).abs();
