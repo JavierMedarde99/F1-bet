@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class Cardpage extends StatelessWidget {
   final Image image;
   final String text;
-  final Container container;
+  final Widget container;
 
   Cardpage({required this.image, required this.text, required this.container});
 
