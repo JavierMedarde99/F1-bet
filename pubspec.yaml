@@ -39,6 +39,7 @@ dependencies:
   http: ^1.6.0
   font_awesome_flutter: ^11.0.0
   flutter_launcher_icons: ^0.14.4
+  bcrypt: ^1.2.0
 
 dev_dependencies:
   flutter_test:

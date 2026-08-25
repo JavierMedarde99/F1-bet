@@ -1,3 +1,4 @@
+import 'package:bcrypt/bcrypt.dart';
 import 'package:f1/models/resultsUser.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -125,7 +126,9 @@ Future<bool> sendBet(
   }
 }
 
-// check if the username and password exist in the database
+// check if the username and password exist in the database.
+// Las contraseñas se almacenan hasheadas con bcrypt; si se encuentra una
+// contraseña legacy en texto plano, se verifica y se actualiza a hash.
 Future<int> validateLogin(String username, String password) async {
   try {
     // Filtramos directamente en la consulta
@@ -135,16 +138,41 @@ Future<int> validateLogin(String username, String password) async {
         .eq('user_name', username)
         .maybeSingle(); // devuelve null si no hay coincidencia
 
-    if (response != null) {
-      // Aquí solo verificamos la contraseña localmente si fuera plaintext (no recomendado)
-      if (response['password'] == password) {
-        return response['id'];
-      }
+    if (response == null) return 0;
+
+    final String storedPassword = response['password'] ?? '';
+
+    if (_isBcryptHash(storedPassword)) {
+      return BCrypt.checkpw(password, storedPassword) ? response['id'] : 0;
+    }
+
+    // Migración transparente: hash de contraseñas legacy en texto plano
+    if (storedPassword == password) {
+      await _upgradeStoredPasswordToHash(response['id'], password);
+      return response['id'];
     }
 
     return 0;
   } catch (error) {
     print('Error al obtener usuario: $error');
     return 0;
+  }
+}
+
+bool _isBcryptHash(String value) {
+  return value.startsWith(r'$2a$') ||
+      value.startsWith(r'$2b$') ||
+      value.startsWith(r'$2y$');
+}
+
+Future<void> _upgradeStoredPasswordToHash(int userId, String plain) async {
+  try {
+    final String hash = BCrypt.hashpw(plain, BCrypt.gensalt());
+    await Supabase.instance.client
+        .from('users_f1')
+        .update({'password': hash})
+        .eq('id', userId);
+  } catch (error) {
+    print('Error actualizando el hash de la contraseña: $error');
   }
 }
