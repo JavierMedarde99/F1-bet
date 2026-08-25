@@ -5,5 +5,4 @@ class Results {
   final ResultsRaces resultsRaces;
   final List<ResultsUser> resultsUser;
   Results({required this.resultsRaces, required this.resultsUser});
-  
 }

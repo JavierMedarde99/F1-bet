@@ -24,10 +24,7 @@ class Cardpage extends StatelessWidget {
         child: Row(
           children: [
             /// IMAGEN
-            Expanded(
-              flex: 1,
-              child: ClipRect(child: image),
-            ),
+            Expanded(flex: 1, child: ClipRect(child: image)),
 
             /// content with the container
             Expanded(

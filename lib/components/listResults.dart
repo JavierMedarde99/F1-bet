@@ -28,17 +28,18 @@ class _ListResultsState extends State<ListResults> {
 
   // Carga (o recarga) los resultados de la carrera
   void _loadResults() {
-    results = Future.wait([
-      getResults(widget.meetingKey),
-      getBetsForMeeting(widget.meetingKey.toString()),
-    ]).then((results) {
-      return [
-        Results(
-          resultsRaces: results[0] as ResultsRaces,
-          resultsUser: results[1] as List<ResultsUser>,
-        ),
-      ];
-    });
+    results =
+        Future.wait([
+          getResults(widget.meetingKey),
+          getBetsForMeeting(widget.meetingKey.toString()),
+        ]).then((results) {
+          return [
+            Results(
+              resultsRaces: results[0] as ResultsRaces,
+              resultsUser: results[1] as List<ResultsUser>,
+            ),
+          ];
+        });
   }
 
   // Pantalla de mensaje unificada sobre fondo carbón
@@ -114,10 +115,10 @@ class _ListResultsState extends State<ListResults> {
             children: [
               const SizedBox(height: GridSpacing.margin),
               ResultF1(
-                alonsoPosition:
-                    races[0].resultsRaces.alonsoPositionBet.toString(),
-                sainzPosition:
-                    races[0].resultsRaces.sainzPositionBet.toString(),
+                alonsoPosition: races[0].resultsRaces.alonsoPositionBet
+                    .toString(),
+                sainzPosition: races[0].resultsRaces.sainzPositionBet
+                    .toString(),
               ),
               Expanded(
                 child: SingleChildScrollView(

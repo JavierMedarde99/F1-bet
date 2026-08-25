@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Resultpage extends StatelessWidget {
-
   final String meetingId;
 
   Resultpage({required this.meetingId});

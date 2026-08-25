@@ -127,7 +127,9 @@ abstract final class GridSpacing {
 abstract final class GridShapes {
   static const double radius = 0;
   static const BorderRadius borderRadius = BorderRadius.zero;
-  static const BorderSide thinSide = BorderSide(color: GridColors.outlineVariant);
+  static const BorderSide thinSide = BorderSide(
+    color: GridColors.outlineVariant,
+  );
 }
 
 /// ThemeData global de la app según el diseño "Grid Dynamic".
@@ -186,7 +188,9 @@ ThemeData getGridTheme() {
           horizontal: GridSpacing.gutter,
           vertical: 14,
         ),
-        shape: const RoundedRectangleBorder(borderRadius: GridShapes.borderRadius),
+        shape: const RoundedRectangleBorder(
+          borderRadius: GridShapes.borderRadius,
+        ),
         side: const BorderSide(color: GridColors.limeDim),
       ),
     ),
@@ -223,7 +227,9 @@ ThemeData getGridTheme() {
       backgroundColor: GridColors.containerHigh,
       contentTextStyle: GridTypography.bodyMd(),
       behavior: SnackBarBehavior.floating,
-      shape: const RoundedRectangleBorder(borderRadius: GridShapes.borderRadius),
+      shape: const RoundedRectangleBorder(
+        borderRadius: GridShapes.borderRadius,
+      ),
     ),
     progressIndicatorTheme: const ProgressIndicatorThemeData(
       color: GridColors.lime,

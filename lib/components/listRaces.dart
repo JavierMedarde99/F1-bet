@@ -42,7 +42,7 @@ class _ListRacesState extends State<ListRaces> {
     });
   }
 
-// Depending on the race status, a button will be created for the following two actions: betting or viewing results.
+  // Depending on the race status, a button will be created for the following two actions: betting or viewing results.
   ElevatedButton actionCircuit(CircuitsState state, String meetingId) {
     switch (state) {
       case CircuitsState.result:
@@ -103,38 +103,36 @@ class _ListRacesState extends State<ListRaces> {
             child: RefreshIndicator(
               onRefresh: _reloadCircuits,
               child: ListView.builder(
-              itemCount: data.length,
-              itemBuilder: (context, index) {
-                final circuit = data[index];
+                itemCount: data.length,
+                itemBuilder: (context, index) {
+                  final circuit = data[index];
 
-                return Cardpage(
-                  image: Image.network(
-                    circuit.imagen,
-                    height: double.infinity,
-                    fit: BoxFit.cover,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    },
-                    errorBuilder: (context, error, stackTrace) {
-                      return const Icon(
-                        Icons.error_outline,
-                        size: 48,
-                        color: Colors.grey,
-                      );
-                    },
-                  ),
-                  text: circuit.name,
-                  container: Container(
-                    child: actionCircuit(
-                      circuit.state,
-                      circuit.meetingId.toString(),
+                  return Cardpage(
+                    image: Image.network(
+                      circuit.imagen,
+                      height: double.infinity,
+                      fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return const Center(child: CircularProgressIndicator());
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(
+                          Icons.error_outline,
+                          size: 48,
+                          color: Colors.grey,
+                        );
+                      },
                     ),
-                  ),
-                );
-              },
+                    text: circuit.name,
+                    container: Container(
+                      child: actionCircuit(
+                        circuit.state,
+                        circuit.meetingId.toString(),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
           );
