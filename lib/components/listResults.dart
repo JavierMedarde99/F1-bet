@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:f1/components/error_retry.dart';
 import 'package:f1/components/resultF1.dart';
 import 'package:f1/components/tableResults.dart';
@@ -26,16 +27,21 @@ class _ListResultsState extends State<ListResults> {
     _loadResults();
   }
 
-  // Carga (o recarga) los resultados de la carrera
+  // Carga (o recarga) los resultados de la carrera.
+  // Guarda también el resultado en la tabla `results` de Supabase
+  // para que el ranking pueda calcularse solo con la base de datos.
   void _loadResults() {
     results =
         Future.wait([
           getResults(widget.meetingKey),
           getBetsForMeeting(widget.meetingKey.toString()),
         ]).then((results) {
+          final raceResults = results[0] as ResultsRaces;
+          // Persistir resultado sin bloquear la UI (fire-and-forget)
+          unawaited(saveRaceResults(widget.meetingKey.toString(), raceResults));
           return [
             Results(
-              resultsRaces: results[0] as ResultsRaces,
+              resultsRaces: raceResults,
               resultsUser: results[1] as List<ResultsUser>,
             ),
           ];

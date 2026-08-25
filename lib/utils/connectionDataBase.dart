@@ -1,7 +1,6 @@
 import 'package:f1/models/ranking.dart';
 import 'package:f1/models/resultsRaces.dart';
 import 'package:f1/models/resultsUser.dart';
-import 'package:f1/utils/f1Api.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -152,23 +151,47 @@ Future<int> validateLogin(String username, String password) async {
   }
 }
 
+// Guarda (upsert) el resultado oficial de una carrera en la tabla results,
+// para que el ranking pueda calcularse solo con la base de datos.
+Future<void> saveRaceResults(
+  String meetingBet,
+  ResultsRaces raceResults,
+) async {
+  try {
+    await Supabase.instance.client.from('results').upsert({
+      'meeting_bet': meetingBet,
+      'alonso_position': raceResults.alonsoPositionBet,
+      'sainz_position': raceResults.sainzPositionBet,
+    });
+  } catch (error) {
+    print('Error guardando el resultado de la carrera: $error');
+  }
+}
+
 // Clasificación de pérdidas acumuladas por usuario.
 //
-// Solo cuentan las carreras con resultado válido (posiciones >= 1);
-// las carreras sin resultado o con error de API se ignoran.
+// Se calcula ÚNICAMENTE con datos de la base de datos: cruza las apuestas
+// (bets) con los resultados oficiales almacenados (results). No se consulta
+// la API de OpenF1. Solo cuentan carreras con resultado guardado.
 // Ordenado DESCENDENTE: el mayor perdedor primero.
 Future<List<RankingUser>> getRankingByLosses() async {
   try {
-    // 1. Obtener todas las apuestas y agruparlas por carrera
+    // 1. Resultados oficiales almacenados en BD, indexados por carrera
+    final savedResults = await Supabase.instance.client
+        .from('results')
+        .select();
+    final Map<String, ResultsRaces> resultsByMeeting = {
+      for (final row in savedResults as List)
+        row['meeting_bet'].toString(): ResultsRaces(
+          alonsoPositionBet: row['alonso_position'] as int,
+          sainzPositionBet: row['sainz_position'] as int,
+        ),
+    };
+
+    // 2. Obtener todas las apuestas
     final bets = await Supabase.instance.client.from('bets').select();
 
-    final Map<String, List<dynamic>> betsByMeeting = {};
-    for (final bet in bets as List) {
-      final meeting = bet['meeting_bet'].toString();
-      betsByMeeting.putIfAbsent(meeting, () => []).add(bet);
-    }
-
-    // 2. Nombres de usuario
+    // 3. Nombres de usuario
     final users = await Supabase.instance.client
         .from('users_f1')
         .select('id, user_name');
@@ -179,41 +202,25 @@ Future<List<RankingUser>> getRankingByLosses() async {
       return 'USUARIO ?';
     }
 
-    // 3. Acumular diferencias por usuario en carreras con resultado válido
+    // 4. Acumular diferencias por usuario en carreras con resultado en BD
     final Map<int, Map<String, int>> acc = {};
-    for (final entry in betsByMeeting.entries) {
-      final int? meetingKey = int.tryParse(entry.key);
-      if (meetingKey == null) continue;
+    for (final bet in bets as List) {
+      final meeting = bet['meeting_bet'].toString();
+      final ResultsRaces? raceResults = resultsByMeeting[meeting];
+      if (raceResults == null) continue; // carrera sin resultado guardado
 
-      ResultsRaces raceResults;
-      try {
-        raceResults = await getResults(meetingKey);
-      } catch (_) {
-        continue; // carrera sin datos en la API
-      }
-      if (raceResults.alonsoPositionBet < 1 ||
-          raceResults.sainzPositionBet < 1) {
-        continue; // resultado no válido aún
-      }
+      final int userId = bet['user_id'] as int;
+      final int losses =
+          (raceResults.alonsoPositionBet - (bet['alonso_position'] as int))
+              .abs() +
+          (raceResults.sainzPositionBet - (bet['sainz_position'] as int)).abs();
 
-      for (final bet in entry.value) {
-        final int userId = bet['user_id'] as int;
-        final int losses =
-            (raceResults.alonsoPositionBet - (bet['alonso_position'] as int))
-                .abs() +
-            (raceResults.sainzPositionBet - (bet['sainz_position'] as int))
-                .abs();
-
-        final current = acc.putIfAbsent(
-          userId,
-          () => {'losses': 0, 'races': 0},
-        );
-        current['losses'] = current['losses']! + losses;
-        current['races'] = current['races']! + 1;
-      }
+      final current = acc.putIfAbsent(userId, () => {'losses': 0, 'races': 0});
+      current['losses'] = current['losses']! + losses;
+      current['races'] = current['races']! + 1;
     }
 
-    // 4. Construir ranking ordenado descendente por pérdidas
+    // 5. Construir ranking ordenado descendente por pérdidas
     final ranking = acc.entries
         .map(
           (e) => RankingUser(
