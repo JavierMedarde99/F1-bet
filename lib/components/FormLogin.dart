@@ -1,5 +1,6 @@
 import 'package:f1/f1Page.dart';
 import 'package:f1/utils/connectionDataBase.dart';
+import 'package:f1/utils/theme.dart';
 import 'package:flutter/material.dart';
 
 class Formlogin extends StatefulWidget {
@@ -22,77 +23,70 @@ class _FormloginState extends State<Formlogin> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          Text("Iniciar Sesión", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-          TextField(
-            controller: usuarioController,
-            decoration: const InputDecoration(
-              labelText: 'Usuario',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 16),
-          TextField(
-            controller: passwordController,
-            obscureText: true, // to input password
-            decoration: const InputDecoration(
-              labelText: 'Contraseña',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-              textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            onPressed: () async {
-              //get the value of inputs
-              final usuario = usuarioController.text.trim();
-              final password = passwordController.text.trim();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'INICIAR SESIÓN',
+          textAlign: TextAlign.center,
+          style: GridTypography.labelCaps(color: GridColors.lime),
+        ),
+        const SizedBox(height: GridSpacing.margin),
+        Text('USUARIO', style: GridTypography.labelCaps()),
+        const SizedBox(height: GridSpacing.unit),
+        TextField(
+          controller: usuarioController,
+          style: GridTypography.dataMono(),
+        ),
+        const SizedBox(height: GridSpacing.gutter),
+        Text('CONTRASEÑA', style: GridTypography.labelCaps()),
+        const SizedBox(height: GridSpacing.unit),
+        TextField(
+          controller: passwordController,
+          obscureText: true, // to input password
+          style: GridTypography.dataMono(),
+        ),
+        const SizedBox(height: GridSpacing.margin),
+        ElevatedButton(
+          onPressed: () async {
+            //get the value of inputs
+            final usuario = usuarioController.text.trim();
+            final password = passwordController.text.trim();
 
-              if (usuario.isEmpty || password.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Por favor, rellena todos los campos'),
-                    backgroundColor: Colors.orange,
-                  ),
-                );
-                return;
-              }
+            if (usuario.isEmpty || password.isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Por favor, rellena todos los campos'),
+                  backgroundColor: Colors.orange,
+                ),
+              );
+              return;
+            }
 
-              int userId = await validateLogin(usuario, password);
+            int userId = await validateLogin(usuario, password);
 
-              // go to the main page 
-              if (userId != 0) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute<void>(
-                    builder: (context) => F1page(userId: userId),
-                  ),
-                );
+            // go to the main page
+            if (userId != 0) {
+              Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (context) => F1page(userId: userId),
+                ),
+              );
 
               //show a error message
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Credenciales incorrectas'),backgroundColor: Colors.red,),
-                );
-              }
-            },
-            child: const Text(
-              'Iniciar Sesión',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ],
-      ),
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Credenciales incorrectas'),
+                  backgroundColor: GridColors.rossoCorsa,
+                ),
+              );
+            }
+          },
+          child: const Text('ENTRAR'),
+        ),
+      ],
     );
   }
 }
