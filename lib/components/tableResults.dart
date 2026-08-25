@@ -13,25 +13,33 @@ class TableResults extends StatefulWidget {
 }
 
 class _TableResultsState extends State<TableResults> {
-
-  int getDifferense(int alonsoPosition, int sainzPosition, int alonsoPositionBet, int sainzPositionBet) {
+  int getDifferense(
+    int alonsoPosition,
+    int sainzPosition,
+    int alonsoPositionBet,
+    int sainzPositionBet,
+  ) {
     int differenseAlonso = (alonsoPositionBet - alonsoPosition).abs();
     int differenseSainz = (sainzPositionBet - sainzPosition).abs();
     return differenseAlonso + differenseSainz;
   }
 
   List<ResultTable> get resultTable {
-    final list = widget.results.resultsUser.map((result) => ResultTable(
-      name: result.name,
-      positionAlonso: result.alonsoPosition,
-      positionSainz: result.sainzPosition,
-      totalDifferense: getDifferense(
-        widget.results.resultsRaces.alonsoPositionBet,
-        widget.results.resultsRaces.sainzPositionBet,
-        result.alonsoPosition,
-        result.sainzPosition,
-      ),
-    )).toList();
+    final list = widget.results.resultsUser
+        .map(
+          (result) => ResultTable(
+            name: result.name,
+            positionAlonso: result.alonsoPosition,
+            positionSainz: result.sainzPosition,
+            totalDifferense: getDifferense(
+              widget.results.resultsRaces.alonsoPositionBet,
+              widget.results.resultsRaces.sainzPositionBet,
+              result.alonsoPosition,
+              result.sainzPosition,
+            ),
+          ),
+        )
+        .toList();
 
     // El ganador es quien tiene MENOR diferencia con el resultado real
     list.sort((a, b) => a.totalDifferense.compareTo(b.totalDifferense));
@@ -61,20 +69,22 @@ class _TableResultsState extends State<TableResults> {
               final result = resultTable[index];
 
               return DataRow(
-                color: WidgetStateProperty.resolveWith<Color?>(
-                  (Set<WidgetState> states) {
-                    if (index == 0) {
-                      // Ganador: fila destacada con acento lima
-                      return GridColors.primaryContainer.withValues(alpha: 0.12);
-                    }
-                    return null;
-                  },
-                ),
+                color: WidgetStateProperty.resolveWith<Color?>((
+                  Set<WidgetState> states,
+                ) {
+                  if (index == 0) {
+                    // Ganador: fila destacada con acento lima
+                    return GridColors.primaryContainer.withValues(alpha: 0.12);
+                  }
+                  return null;
+                }),
                 cells: [
                   DataCell(
                     Text(
                       result.name.toUpperCase(),
-                      style: GridTypography.dataMono(color: GridColors.onSurface),
+                      style: GridTypography.dataMono(
+                        color: GridColors.onSurface,
+                      ),
                     ),
                   ),
                   DataCell(Text('${result.positionAlonso}')),
@@ -82,7 +92,9 @@ class _TableResultsState extends State<TableResults> {
                   DataCell(
                     Text(
                       '${result.totalDifferense}',
-                      style: GridTypography.dataMono(color: GridColors.rossoCorsa),
+                      style: GridTypography.dataMono(
+                        color: GridColors.rossoCorsa,
+                      ),
                     ),
                   ),
                 ],

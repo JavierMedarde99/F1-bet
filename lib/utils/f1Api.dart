@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 
 // Obtain all the circuits for this year, obtaining only the flag, the id and the name
 Future<List<Circuit>> getCircuits() async {
-
   String url = URL_CIRCUITS + DateTime.now().year.toString();
 
   final response = await http.get(Uri.parse(url));
@@ -69,36 +68,39 @@ bool filterCircuits(String name, DateTime dateRaces) {
 // We obtain the final position of Alonso and Sains
 Future<ResultsRaces> getResults(int meetingKey) async {
   int sessionId = await getRace(meetingKey);
-  int alonsoPosition = await getResultsByDriver(sessionId.toString(), ALONSO_ID);
+  int alonsoPosition = await getResultsByDriver(
+    sessionId.toString(),
+    ALONSO_ID,
+  );
   int sainzPosition = await getResultsByDriver(sessionId.toString(), SAINZ_ID);
 
-
-  return 
-    ResultsRaces(
-      alonsoPositionBet: alonsoPosition,
-      sainzPositionBet: sainzPosition,
-    );
+  return ResultsRaces(
+    alonsoPositionBet: alonsoPosition,
+    sainzPositionBet: sainzPosition,
+  );
 }
 
 // We obtain the final position of a driver
 Future<int> getResultsByDriver(String sessionId, int driverId) async {
-    String url = URL_RESULTS.replaceAll("{driverId}", driverId.toString()).replaceAll("{sessionId}", sessionId);
-    final response = await http.get(Uri.parse(url));
-    if (response.statusCode == 200) {
-      JsonDecoder decoder = const JsonDecoder();
-      var data = decoder.convert(response.body);
-      if(data.length == 0) {
-        return -1; // No hay resultados para este piloto
-      }
-      if(data[0]['position'] == null) {
-        return -2; // El piloto no terminó la carrera o no tiene posición asignada
-      }
-      return data[0]['position'];
-    } else {
-      print("error to get results by driver: ${response.statusCode}");
-      throw Exception('Failed to load results by driver');
+  String url = URL_RESULTS
+      .replaceAll("{driverId}", driverId.toString())
+      .replaceAll("{sessionId}", sessionId);
+  final response = await http.get(Uri.parse(url));
+  if (response.statusCode == 200) {
+    JsonDecoder decoder = const JsonDecoder();
+    var data = decoder.convert(response.body);
+    if (data.length == 0) {
+      return -1; // No hay resultados para este piloto
     }
+    if (data[0]['position'] == null) {
+      return -2; // El piloto no terminó la carrera o no tiene posición asignada
+    }
+    return data[0]['position'];
+  } else {
+    print("error to get results by driver: ${response.statusCode}");
+    throw Exception('Failed to load results by driver');
   }
+}
 
 // We obtain the race ID
 Future<int> getRace(int meetingKey) async {

@@ -26,7 +26,7 @@ class Betpage extends StatelessWidget {
         ),
       ),
       body: Center(
-        child: FormBet(userId: userId, meetingId: meetingId)
+        child: FormBet(userId: userId, meetingId: meetingId),
       ),
     );
   }

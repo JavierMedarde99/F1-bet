@@ -26,7 +26,9 @@ class Errorretry extends StatelessWidget {
             ),
             const SizedBox(height: GridSpacing.margin),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: GridSpacing.margin),
+              padding: const EdgeInsets.symmetric(
+                horizontal: GridSpacing.margin,
+              ),
               child: Text(
                 message,
                 textAlign: TextAlign.center,

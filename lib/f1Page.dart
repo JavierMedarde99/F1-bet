@@ -1,4 +1,5 @@
 import 'package:f1/components/listRaces.dart';
+import 'package:f1/rankingPage.dart';
 import 'package:f1/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -24,6 +25,23 @@ class F1page extends StatelessWidget {
           ],
         ),
         actions: [
+          // Acceso al ranking de pérdidas
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (context) => const RankingPage(),
+                ),
+              );
+            },
+            icon: const FaIcon(
+              FontAwesomeIcons.skull,
+              size: 18,
+              color: GridColors.rossoCorsa,
+            ),
+            tooltip: 'Ranking',
+          ),
           // Chip del año en curso con borde lima
           Container(
             margin: const EdgeInsets.only(right: GridSpacing.gutter),
@@ -41,9 +59,7 @@ class F1page extends StatelessWidget {
           ),
         ],
       ),
-      body: Center(
-        child: ListRaces(userId: userId,),
-      ),
+      body: Center(child: ListRaces(userId: userId)),
     );
   }
 }

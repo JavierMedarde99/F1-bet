@@ -18,7 +18,10 @@ class ResultF1 extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text(name.toUpperCase(), style: GridTypography.labelCaps(color: accent)),
+          Text(
+            name.toUpperCase(),
+            style: GridTypography.labelCaps(color: accent),
+          ),
           const SizedBox(height: GridSpacing.unit * 2),
           Text(position, style: GridTypography.oddsLg()),
         ],
@@ -31,10 +34,7 @@ class ResultF1 extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
-          "RESULTADOS DE LA CARRERA",
-          style: GridTypography.labelCaps(),
-        ),
+        Text("RESULTADOS DE LA CARRERA", style: GridTypography.labelCaps()),
         const SizedBox(height: GridSpacing.gutter),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
