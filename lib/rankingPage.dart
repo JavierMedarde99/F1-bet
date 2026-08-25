@@ -74,10 +74,14 @@ class _RankingPageState extends State<RankingPage> {
             child: ListView.builder(
               itemCount: ranking.length,
               itemBuilder: (context, index) {
+                // Empates: todos los usuarios con las pérdidas máximas
+                final int topLosses = ranking.first.totalLosses;
                 return RankingRow(
                   user: ranking[index],
                   position: index + 1,
                   totalRows: ranking.length,
+                  isTopLoser:
+                      topLosses > 0 && ranking[index].totalLosses == topLosses,
                 );
               },
             ),
