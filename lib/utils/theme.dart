@@ -207,7 +207,9 @@ ThemeData getGridTheme() {
       dataRowColor: WidgetStatePropertyAll(GridColors.container),
       headingTextStyle: GridTypography.labelCaps(color: GridColors.lime),
       dataTextStyle: GridTypography.dataMono(),
-      border: TableBorder.all(color: GridColors.outlineVariant, width: 1),
+      decoration: BoxDecoration(
+        border: Border.all(color: GridColors.outlineVariant, width: 1),
+      ),
     ),
     cardTheme: CardThemeData(
       color: GridColors.container,
@@ -226,10 +228,6 @@ ThemeData getGridTheme() {
     progressIndicatorTheme: const ProgressIndicatorThemeData(
       color: GridColors.lime,
       linearTrackColor: GridColors.containerHighest,
-    ),
-    refreshIndicatorTheme: const RefreshIndicatorThemeData(
-      color: GridColors.lime,
-      backgroundColor: GridColors.containerHigh,
     ),
     dividerTheme: const DividerThemeData(color: GridColors.outlineVariant),
   );
