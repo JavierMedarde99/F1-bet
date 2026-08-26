@@ -129,10 +129,19 @@ Future<bool> sendBet(
   }
 }
 
+enum LoginError { none, wrongCredentials, networkError, unknown }
+
+class LoginResult {
+  final int userId;
+  final LoginError error;
+
+  const LoginResult(this.userId, [this.error = LoginError.none]);
+}
+
 // check if the username and password exist in the database.
 // Las contraseñas se almacenan hasheadas con bcrypt; si se encuentra una
 // contraseña legacy en texto plano, se verifica y se actualiza a hash.
-Future<int> validateLogin(String username, String password) async {
+Future<LoginResult> validateLogin(String username, String password) async {
   try {
     // Filtramos directamente en la consulta
     final response = await Supabase.instance.client
@@ -141,24 +150,26 @@ Future<int> validateLogin(String username, String password) async {
         .eq('user_name', username)
         .maybeSingle(); // devuelve null si no hay coincidencia
 
-    if (response == null) return 0;
+    if (response == null) return const LoginResult(0, LoginError.wrongCredentials);
 
     final String storedPassword = response['password'] ?? '';
 
     if (_isBcryptHash(storedPassword)) {
-      return BCrypt.checkpw(password, storedPassword) ? response['id'] : 0;
+      return BCrypt.checkpw(password, storedPassword)
+          ? LoginResult(response['id'] as int)
+          : const LoginResult(0, LoginError.wrongCredentials);
     }
 
     // Migración transparente: hash de contraseñas legacy en texto plano
     if (storedPassword == password) {
-      await _upgradeStoredPasswordToHash(response['id'], password);
-      return response['id'];
+      await _upgradeStoredPasswordToHash(response['id'] as int, password);
+      return LoginResult(response['id'] as int);
     }
 
-    return 0;
+    return const LoginResult(0, LoginError.wrongCredentials);
   } catch (error) {
     print('Error al obtener usuario: $error');
-    return 0;
+    return const LoginResult(0, LoginError.networkError);
   }
 }
 

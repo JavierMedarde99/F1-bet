@@ -63,24 +63,34 @@ class _FormloginState extends State<Formlogin> {
               return;
             }
 
-            int userId = await validateLogin(usuario, password);
+            final result = await validateLogin(usuario, password);
 
             // go to the main page
-            if (userId != 0) {
+            if (result.userId != 0) {
               Navigator.push(
                 context,
                 MaterialPageRoute<void>(
-                  builder: (context) => F1page(userId: userId),
+                  builder: (context) => F1page(userId: result.userId),
                 ),
               );
 
               //show a error message
             } else {
+              String msg;
+              Color bg;
+              switch (result.error) {
+                case LoginError.networkError:
+                  msg = 'Error de conexion. Intentalo de nuevo.';
+                  bg = Colors.orange;
+                  break;
+                case LoginError.wrongCredentials:
+                default:
+                  msg = 'Credenciales incorrectas';
+                  bg = GridColors.rossoCorsa;
+                  break;
+              }
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Credenciales incorrectas'),
-                  backgroundColor: GridColors.rossoCorsa,
-                ),
+                SnackBar(content: Text(msg), backgroundColor: bg),
               );
             }
           },
