@@ -13,6 +13,7 @@ class Formlogin extends StatefulWidget {
 class _FormloginState extends State<Formlogin> {
   final TextEditingController usuarioController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  bool _isSubmitting = false;
 
   @override
   void dispose() {
@@ -48,43 +49,54 @@ class _FormloginState extends State<Formlogin> {
         ),
         const SizedBox(height: GridSpacing.margin),
         ElevatedButton(
-          onPressed: () async {
-            //get the value of inputs
-            final usuario = usuarioController.text.trim();
-            final password = passwordController.text.trim();
+          onPressed: _isSubmitting
+              ? null
+              : () async {
+                  setState(() => _isSubmitting = true);
 
-            if (usuario.isEmpty || password.isEmpty) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Por favor, rellena todos los campos'),
-                  backgroundColor: Colors.orange,
-                ),
-              );
-              return;
-            }
+                  final usuario = usuarioController.text.trim();
+                  final password = passwordController.text.trim();
 
-            int userId = await validateLogin(usuario, password);
+                  if (usuario.isEmpty || password.isEmpty) {
+                    if (!mounted) return;
+                    setState(() => _isSubmitting = false);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Por favor, rellena todos los campos'),
+                        backgroundColor: Colors.orange,
+                      ),
+                    );
+                    return;
+                  }
 
-            // go to the main page
-            if (userId != 0) {
-              Navigator.push(
-                context,
-                MaterialPageRoute<void>(
-                  builder: (context) => F1page(userId: userId),
-                ),
-              );
+                  int userId = await validateLogin(usuario, password);
 
-              //show a error message
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Credenciales incorrectas'),
-                  backgroundColor: GridColors.rossoCorsa,
-                ),
-              );
-            }
-          },
-          child: const Text('ENTRAR'),
+                  if (!mounted) return;
+                  setState(() => _isSubmitting = false);
+
+                  if (userId != 0) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder: (context) => F1page(userId: userId),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Credenciales incorrectas'),
+                        backgroundColor: GridColors.rossoCorsa,
+                      ),
+                    );
+                  }
+                },
+          child: _isSubmitting
+              ? const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Text('ENTRAR'),
         ),
       ],
     );
