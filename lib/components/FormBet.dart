@@ -34,6 +34,8 @@ class _FormBetState extends State<FormBet> {
       widget.meetingId,
     );
 
+    if (!mounted) return;
+
     if (bet != null) {
       int? positionAlonso = bet['alonso_position'];
       int? positionSainz = bet['sainz_position'];
