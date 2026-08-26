@@ -4,6 +4,7 @@ import 'package:f1/components/error_retry.dart';
 import 'package:f1/models/circuits.dart';
 import 'package:f1/resultPage.dart';
 import 'package:f1/utils/f1Api.dart';
+import 'package:f1/utils/theme.dart';
 import 'package:flutter/material.dart';
 
 class ListRaces extends StatefulWidget {
@@ -41,11 +42,16 @@ class _ListRacesState extends State<ListRaces> {
     });
   }
 
-// Depending on the race status, a button will be created for the following two actions: betting or viewing results.
+  // Depending on the race status, a button will be created for the following two actions: betting or viewing results.
   ElevatedButton actionCircuit(CircuitsState state, String meetingId) {
     switch (state) {
       case CircuitsState.result:
         return ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: GridColors.rossoCorsa,
+            foregroundColor: GridColors.onSecondaryContainer,
+            side: const BorderSide(color: GridColors.secondary),
+          ),
           onPressed: () {
             Navigator.push(
               context,
@@ -54,10 +60,13 @@ class _ListRacesState extends State<ListRaces> {
               ),
             );
           },
-          child: Text("Resultados"),
+          child: const Text("RESULTADOS"),
         );
       case CircuitsState.bet:
         return ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            side: const BorderSide(color: GridColors.limeDim),
+          ),
           onPressed: () {
             Navigator.push(
               context,
@@ -67,10 +76,18 @@ class _ListRacesState extends State<ListRaces> {
               ),
             );
           },
-          child: Text("Apostar"),
+          child: const Text("APOSTAR"),
         );
       case CircuitsState.future:
-        return ElevatedButton(onPressed: null, child: Text("Futura Apostar"));
+        return ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            disabledBackgroundColor: GridColors.containerHighest,
+            disabledForegroundColor: GridColors.outline,
+            side: const BorderSide(color: GridColors.outlineVariant),
+          ),
+          onPressed: null,
+          child: const Text("FUTURA"),
+        );
     }
   }
 
@@ -82,52 +99,40 @@ class _ListRacesState extends State<ListRaces> {
         if (snapshot.hasData) {
           List<Circuit> data = snapshot.data!;
           return Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient( // gradient to red
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFF8B0000), 
-                  Color(0xFFE10600), 
-                  Color(0xFF1C1C1C), 
-                ],
-              ),
-            ),
+            color: GridColors.surface,
             child: RefreshIndicator(
               onRefresh: _reloadCircuits,
               child: ListView.builder(
-              itemCount: data.length,
-              itemBuilder: (context, index) {
-                final circuit = data[index];
+                itemCount: data.length,
+                itemBuilder: (context, index) {
+                  final circuit = data[index];
 
-                return Cardpage(
-                  image: Image.network(
-                    circuit.imagen,
-                    height: double.infinity,
-                    fit: BoxFit.cover,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    },
-                    errorBuilder: (context, error, stackTrace) {
-                      return const Icon(
-                        Icons.error_outline,
-                        size: 48,
-                        color: Colors.grey,
-                      );
-                    },
-                  ),
-                  text: circuit.name,
-                  container: Container(
-                    child: actionCircuit(
-                      circuit.state,
-                      circuit.meetingId.toString(),
+                  return Cardpage(
+                    image: Image.network(
+                      circuit.imagen,
+                      height: double.infinity,
+                      fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return const Center(child: CircularProgressIndicator());
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(
+                          Icons.error_outline,
+                          size: 48,
+                          color: Colors.grey,
+                        );
+                      },
                     ),
-                  ),
-                );
-              },
+                    text: circuit.name,
+                    container: Container(
+                      child: actionCircuit(
+                        circuit.state,
+                        circuit.meetingId.toString(),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
           );

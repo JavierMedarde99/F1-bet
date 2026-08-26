@@ -1,8 +1,8 @@
 import 'package:f1/components/FormLogin.dart';
 import 'package:f1/utils/connectionDataBase.dart';
+import 'package:f1/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 
 Future<void> main() async {
   // conection to SupaBase
@@ -17,13 +17,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'apuesta F1',
-      theme: ThemeData(primarySwatch: Colors.red),
+      title: 'F1 Apuesta',
+      debugShowCheckedModeBanner: false,
+      theme: getGridTheme(),
       home: const LoginPage(),
     );
   }
 }
-
 
 // The homepage is the login page to access the website
 class LoginPage extends StatelessWidget {
@@ -33,63 +33,44 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration( // gradient to red
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFF8B0000), 
-              Color(0xFFE10600), 
-              Color(0xFF1C1C1C), 
-            ],
-          ),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  FaIcon(FontAwesomeIcons.flagCheckered, size: 50, color: Colors.white),
-                  const Text(
-                    "F1 APUESTA",
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 2,
-                      color: Colors.white,
-                    ),
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 24),
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                    ),
-                    child: const Formlogin(),
-                  ),
-
-                ],
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(GridSpacing.margin),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Logo con borde lima de 2px
+              Container(
+                padding: const EdgeInsets.all(GridSpacing.gutter),
+                decoration: BoxDecoration(
+                  border: Border.all(color: GridColors.lime, width: 2),
+                ),
+                child: const FaIcon(
+                  FontAwesomeIcons.flagCheckered,
+                  size: 48,
+                  color: GridColors.lime,
+                ),
               ),
-            ),
+              const SizedBox(height: GridSpacing.margin),
+              Text(
+                'F1 APUESTA',
+                style: GridTypography.headlineLgMobile(color: GridColors.lime),
+              ),
+              const SizedBox(height: GridSpacing.margin),
+              Container(
+                width: double.infinity,
+                constraints: const BoxConstraints(maxWidth: 420),
+                padding: const EdgeInsets.all(GridSpacing.gutter),
+                decoration: BoxDecoration(
+                  color: GridColors.containerLow,
+                  border: Border.all(color: GridColors.outlineVariant),
+                ),
+                child: const Formlogin(),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 }
-

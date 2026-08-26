@@ -1,5 +1,6 @@
-import 'package:f1/models/resultTable.dart';
 import 'package:f1/models/results.dart';
+import 'package:f1/models/resultTable.dart';
+import 'package:f1/utils/theme.dart';
 import 'package:flutter/material.dart';
 
 class TableResults extends StatefulWidget {
@@ -12,25 +13,33 @@ class TableResults extends StatefulWidget {
 }
 
 class _TableResultsState extends State<TableResults> {
-
-  int getDifferense(int alonsoPosition, int sainzPosition, int alonsoPositionBet, int sainzPositionBet) {
+  int getDifferense(
+    int alonsoPosition,
+    int sainzPosition,
+    int alonsoPositionBet,
+    int sainzPositionBet,
+  ) {
     int differenseAlonso = (alonsoPositionBet - alonsoPosition).abs();
     int differenseSainz = (sainzPositionBet - sainzPosition).abs();
     return differenseAlonso + differenseSainz;
   }
 
   List<ResultTable> get resultTable {
-    final list = widget.results.resultsUser.map((result) => ResultTable(
-      name: result.name,
-      positionAlonso: result.alonsoPosition,
-      positionSainz: result.sainzPosition,
-      totalDifferense: getDifferense(
-        widget.results.resultsRaces.alonsoPositionBet,
-        widget.results.resultsRaces.sainzPositionBet,
-        result.alonsoPosition,
-        result.sainzPosition,
-      ),
-    )).toList();
+    final list = widget.results.resultsUser
+        .map(
+          (result) => ResultTable(
+            name: result.name,
+            positionAlonso: result.alonsoPosition,
+            positionSainz: result.sainzPosition,
+            totalDifferense: getDifferense(
+              widget.results.resultsRaces.alonsoPositionBet,
+              widget.results.resultsRaces.sainzPositionBet,
+              result.alonsoPosition,
+              result.sainzPosition,
+            ),
+          ),
+        )
+        .toList();
 
     // El ganador es quien tiene MENOR diferencia con el resultado real
     list.sort((a, b) => a.totalDifferense.compareTo(b.totalDifferense));
@@ -41,47 +50,57 @@ class _TableResultsState extends State<TableResults> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(GridSpacing.gutter),
       child: Column(
         children: [
-          const Text(
-            "Tabla de resultados",
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Colors.white
-            ),
+          Text(
+            "TABLA DE RESULTADOS",
+            style: GridTypography.labelCaps(color: GridColors.lime),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: GridSpacing.gutter),
           DataTable(
-            headingRowColor: WidgetStateProperty.all(Colors.black),
-            headingTextStyle: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
             columns: const <DataColumn>[
-              DataColumn(label: Text('Usuario')),
-              DataColumn(label: Text('Alonso')),
-              DataColumn(label: Text('Sainz')),
-              DataColumn(label: Text('Resto')),
+              DataColumn(label: Text('USUARIO')),
+              DataColumn(label: Text('ALONSO')),
+              DataColumn(label: Text('SAINZ')),
+              DataColumn(label: Text('RESTO')),
             ],
             rows: List.generate(resultTable.length, (index) {
               final result = resultTable[index];
 
+              // Ganador(es): toda fila con la diferencia mínima (incluye empates)
+              final bool isWinner =
+                  result.totalDifferense == resultTable.first.totalDifferense;
+
               return DataRow(
-                color: WidgetStateProperty.resolveWith<Color?>(
-                  (Set<WidgetState> states) {
-                    if (index == 0) {
-                      return Colors.green; // Ganador: menor diferencia
-                    }
-                    return null;
-                  },
-                ),
+                color: WidgetStateProperty.resolveWith<Color?>((
+                  Set<WidgetState> states,
+                ) {
+                  if (isWinner) {
+                    // Ganador: fila destacada con acento lima
+                    return GridColors.primaryContainer.withValues(alpha: 0.12);
+                  }
+                  return null;
+                }),
                 cells: [
-                  DataCell(Text(result.name)),
-                  DataCell(Text(result.positionAlonso.toString())),
-                  DataCell(Text(result.positionSainz.toString())),
-                  DataCell(Text(result.totalDifferense.toString())),
+                  DataCell(
+                    Text(
+                      result.name.toUpperCase(),
+                      style: GridTypography.dataMono(
+                        color: GridColors.onSurface,
+                      ),
+                    ),
+                  ),
+                  DataCell(Text('${result.positionAlonso}')),
+                  DataCell(Text('${result.positionSainz}')),
+                  DataCell(
+                    Text(
+                      '${result.totalDifferense}',
+                      style: GridTypography.dataMono(
+                        color: GridColors.rossoCorsa,
+                      ),
+                    ),
+                  ),
                 ],
               );
             }),

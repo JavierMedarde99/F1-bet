@@ -1,7 +1,7 @@
-import 'package:f1/components/cardPage.dart';
+import 'package:f1/utils/connectionDataBase.dart';
+import 'package:f1/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:f1/utils/connectionDataBase.dart';
 
 class FormBet extends StatefulWidget {
   final int userId;
@@ -91,7 +91,7 @@ class _FormBetState extends State<FormBet> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: success ? Colors.green : Colors.red,
+        backgroundColor: success ? GridColors.limeDim : GridColors.rossoCorsa,
         content: Text(
           success
               ? _isExists
@@ -116,6 +116,59 @@ class _FormBetState extends State<FormBet> {
     super.dispose();
   }
 
+  // Módulo split de piloto: imagen + input subrayado, borde de acento lima/rosso
+  Widget _driverModule({
+    required String asset,
+    required String label,
+    required Color accent,
+    required TextEditingController controller,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(GridSpacing.gutter),
+      decoration: BoxDecoration(
+        color: GridColors.containerLow,
+        border: Border(
+          left: BorderSide(color: accent, width: 4),
+          top: const BorderSide(color: GridColors.outlineVariant),
+          right: const BorderSide(color: GridColors.outlineVariant),
+          bottom: const BorderSide(color: GridColors.outlineVariant),
+        ),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 1,
+            child: Image.asset(
+              asset,
+              errorBuilder: (context, error, stackTrace) {
+                return Icon(Icons.person, size: 64, color: accent);
+              },
+            ),
+          ),
+          const SizedBox(width: GridSpacing.gutter),
+          Expanded(
+            flex: 2,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label.toUpperCase(), style: GridTypography.labelCaps()),
+                const SizedBox(height: GridSpacing.unit * 3),
+                TextField(
+                  controller: controller,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  maxLength: 2,
+                  style: GridTypography.oddsLg(),
+                  decoration: const InputDecoration(hintText: 'POSICIÓN'),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
@@ -124,73 +177,31 @@ class _FormBetState extends State<FormBet> {
 
     // betting form
     return Container(
-      color: Colors.black87,
+      color: GridColors.surface,
+      padding: const EdgeInsets.all(GridSpacing.margin),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-        
-          Cardpage(
-              image: Image.asset(
-                'assets/images/alonso.jpg',
-                errorBuilder: (context, error, stackTrace) {
-                  return const Icon(Icons.person, size: 64);
-                },
-              ),
-              text: "apuesta a alonso",
-              container: Container(child: TextField(
-                  controller: betAlonso,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    hintText: "Posición",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),),
-            ),
+          _driverModule(
+            asset: 'assets/images/alonso.jpg',
+            label: "Apuesta a Alonso",
+            accent: GridColors.lime,
+            controller: betAlonso,
+          ),
 
-            Cardpage(
-              image: Image.asset(
-                'assets/images/sainz.jpg',
-                errorBuilder: (context, error, stackTrace) {
-                  return const Icon(Icons.person, size: 64);
-                },
-              ),
-              text: "apuesta a sainz",
-              container: Container(child: TextField(
-                  controller: betSainz,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    hintText: "Posición",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),),
-            ),
+          _driverModule(
+            asset: 'assets/images/sainz.jpg',
+            label: "Apuesta a Sainz",
+            accent: GridColors.rossoCorsa,
+            controller: betSainz,
+          ),
 
           // button send bet
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                backgroundColor: Colors.red,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-              ),
               onPressed: _submitBet,
-              child: Text(
-                _isExists ? 'Actualizar Apuesta' : 'Enviar Apuesta',
-                style: const TextStyle(fontSize: 16,color: Colors.white),
-              ),
+              child: Text(_isExists ? 'ACTUALIZAR APUESTA' : 'ENVIAR APUESTA'),
             ),
           ),
         ],

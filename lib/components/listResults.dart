@@ -6,6 +6,7 @@ import 'package:f1/models/resultsRaces.dart';
 import 'package:f1/models/resultsUser.dart';
 import 'package:f1/utils/connectionDataBase.dart';
 import 'package:f1/utils/f1Api.dart';
+import 'package:f1/utils/theme.dart';
 import 'package:flutter/material.dart';
 
 class ListResults extends StatefulWidget {
@@ -27,17 +28,37 @@ class _ListResultsState extends State<ListResults> {
 
   // Carga (o recarga) los resultados de la carrera
   void _loadResults() {
-    results = Future.wait([
-      getResults(widget.meetingKey),
-      getBetsForMeeting(widget.meetingKey.toString()),
-    ]).then((results) {
-      return [
-        Results(
-          resultsRaces: results[0] as ResultsRaces,
-          resultsUser: results[1] as List<ResultsUser>,
+    results =
+        Future.wait([
+          getResults(widget.meetingKey),
+          getBetsForMeeting(widget.meetingKey.toString()),
+        ]).then((results) {
+          return [
+            Results(
+              resultsRaces: results[0] as ResultsRaces,
+              resultsUser: results[1] as List<ResultsUser>,
+            ),
+          ];
+        });
+  }
+
+  // Pantalla de mensaje unificada sobre fondo carbón
+  Widget _screenMessage(String message) {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      color: GridColors.surface,
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(GridSpacing.margin),
+          child: Text(
+            message.toUpperCase(),
+            textAlign: TextAlign.center,
+            style: GridTypography.headlineLgMobile(),
+          ),
         ),
-      ];
-    });
+      ),
+    );
   }
 
   @override
@@ -46,7 +67,10 @@ class _ListResultsState extends State<ListResults> {
       future: results,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Container(child: CircularProgressIndicator());
+          return Container(
+            color: GridColors.surface,
+            child: const Center(child: CircularProgressIndicator()),
+          );
         }
 
         if (snapshot.hasError) {
@@ -64,123 +88,43 @@ class _ListResultsState extends State<ListResults> {
 
         if (races[0].resultsRaces.alonsoPositionBet == -1 ||
             races[0].resultsRaces.sainzPositionBet == -1) {
-          return Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: const BoxDecoration( // gradient to red
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFF8B0000), 
-                  Color(0xFFE10600), 
-                  Color(0xFF1C1C1C), 
-                ],
-              ),
-            ),
-            child: Center(
-              child: Text(
-                "No hay resultados disponibles",
-                style: TextStyle(color: Colors.white,fontSize: 25,fontWeight: FontWeight.bold),
-              ),
-            ),
-          );
+          return _screenMessage("No hay resultados disponibles");
         }
 
         if (races[0].resultsRaces.alonsoPositionBet == -2) {
-          return Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: const BoxDecoration( // gradient to red
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFF8B0000), 
-                  Color(0xFFE10600), 
-                  Color(0xFF1C1C1C), 
-                ],
-              ),
-            ),
-            child: Center(
-              child: Text(
-                "Alonso no terminó la carrera o no tiene posición asignada",
-                style: TextStyle(color: Colors.white,fontSize: 25,fontWeight: FontWeight.bold),
-              ),
-            ),
+          return _screenMessage(
+            "Alonso no terminó la carrera o no tiene posición asignada",
           );
         }
 
         if (races[0].resultsRaces.sainzPositionBet == -2) {
-          return Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: const BoxDecoration( // gradient to red
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFF8B0000), 
-                  Color(0xFFE10600), 
-                  Color(0xFF1C1C1C), 
-                ],
-              ),
-            ),
-            child: Center(
-              child: Text(
-                "Sainz no terminó la carrera o no tiene posición asignada",
-                style: TextStyle(color: Colors.white,fontSize: 25,fontWeight: FontWeight.bold),
-              ),
-            ),
+          return _screenMessage(
+            "Sainz no terminó la carrera o no tiene posición asignada",
           );
         }
 
-        if(races[0].resultsUser.isEmpty){
-          return Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: const BoxDecoration( // gradient to red
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFF8B0000), 
-                  Color(0xFFE10600), 
-                  Color(0xFF1C1C1C), 
-                ],
-              ),
-            ),
-            child: Center(
-              child: Text(
-                "No hay apuestas en esta carrera, no pierde nadie",
-                style: TextStyle(color: Colors.white,fontSize: 25,fontWeight: FontWeight.bold),
-              ),
-            ),
+        if (races[0].resultsUser.isEmpty) {
+          return _screenMessage(
+            "No hay apuestas en esta carrera, no pierde nadie",
           );
         }
 
         return Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient( // gradient to red
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color(0xFF8B0000), 
-                Color(0xFFE10600), 
-                Color(0xFF1C1C1C),
-              ],
-            ),
-          ),
+          color: GridColors.surface,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
+              const SizedBox(height: GridSpacing.margin),
               ResultF1(
                 alonsoPosition: races[0].resultsRaces.alonsoPositionBet
                     .toString(),
                 sainzPosition: races[0].resultsRaces.sainzPositionBet
                     .toString(),
               ),
-              TableResults(results: races[0]),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: TableResults(results: races[0]),
+                ),
+              ),
             ],
           ),
         );
