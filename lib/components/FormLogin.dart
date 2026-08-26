@@ -65,6 +65,8 @@ class _FormloginState extends State<Formlogin> {
 
             int userId = await validateLogin(usuario, password);
 
+            if (!mounted) return;
+
             // go to the main page
             if (userId != 0) {
               Navigator.push(
