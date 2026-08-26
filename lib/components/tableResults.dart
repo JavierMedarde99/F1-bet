@@ -68,11 +68,15 @@ class _TableResultsState extends State<TableResults> {
             rows: List.generate(resultTable.length, (index) {
               final result = resultTable[index];
 
+              // Ganador(es): toda fila con la diferencia mínima (incluye empates)
+              final bool isWinner =
+                  result.totalDifferense == resultTable.first.totalDifferense;
+
               return DataRow(
                 color: WidgetStateProperty.resolveWith<Color?>((
                   Set<WidgetState> states,
                 ) {
-                  if (index == 0) {
+                  if (isWinner) {
                     // Ganador: fila destacada con acento lima
                     return GridColors.primaryContainer.withValues(alpha: 0.12);
                   }

@@ -12,24 +12,24 @@ class RankingRow extends StatelessWidget {
   final RankingUser user;
   final int position;
   final int totalRows;
+  final bool isTopLoser;
 
   const RankingRow({
     super.key,
     required this.user,
     required this.position,
     required this.totalRows,
+    required this.isTopLoser,
   });
 
   Color _positionColor() {
-    if (position == 1) return GridColors.lime;
+    if (isTopLoser) return GridColors.lime;
     if (position == totalRows) return GridColors.rossoCorsa;
     return GridColors.onSurfaceVariant;
   }
 
   @override
   Widget build(BuildContext context) {
-    final bool isTopLoser = position == 1 && user.totalLosses > 0;
-
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: GridSpacing.gutter,
