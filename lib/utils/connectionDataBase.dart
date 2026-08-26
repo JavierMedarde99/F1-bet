@@ -17,9 +17,11 @@ Future<void> connectiondatabase() async {
   String? url = dotenv.env['DATABASE_URL'];
   String? anonKey = dotenv.env['ANON_KEY'];
 
-  // Revisar null o cadena vacía
-  if (url == null || url.isEmpty || anonKey == null || anonKey.isEmpty) {
+  // Fallback individual por si .env no tiene alguna variable
+  if (url == null || url.isEmpty) {
     url = const String.fromEnvironment('DATABASE_URL');
+  }
+  if (anonKey == null || anonKey.isEmpty) {
     anonKey = const String.fromEnvironment('ANON_KEY');
   }
 
