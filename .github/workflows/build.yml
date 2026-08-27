@@ -28,10 +28,10 @@ jobs:
 
       - name: Create .env
         run: |
-          cat > .env <<EOF
-          DATABASE_URL=${{ secrets.DATABASE_URL }}
-          ANON_KEY=${{ secrets.ANON_KEY }}
-          EOF
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
+          echo "ANON_KEY=${{ secrets.ANON_KEY }}" >> .env
+          echo "--- .env contents ---"
+          cat .env
 
       - name: Build APK
         run: flutter build apk --release
