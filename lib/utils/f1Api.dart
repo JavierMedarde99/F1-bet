@@ -19,11 +19,14 @@ Future<List<Circuit>> getCircuits() async {
         circuit['meeting_name'],
         DateTime.parse(circuit['date_end']),
       )) {
-        int difference = DateTime.parse(
-          circuit['date_end'],
-        ).difference(DateTime.now()).inDays;
+        // La fecha máxima para apostar es el jueves de la semana de la carrera.
+        // La carrera (date_end) suele ser el domingo, por lo que el jueves
+        // equivale a date_end - 3 días. A partir del viernes pasa a RESULTADOS.
+        final dateEnd = DateTime.parse(circuit['date_end']);
+        final jueves = dateEnd.subtract(const Duration(days: 3));
+        final int difference = _daysFromToday(jueves);
 
-        if (difference <= 0) {
+        if (difference < 0) {
           circuits.add(
             Circuit(
               circuit['meeting_name'],
@@ -58,6 +61,15 @@ Future<List<Circuit>> getCircuits() async {
   }
 
   return circuits;
+}
+
+// Días desde hoy hasta [date], normalizando ambos a medianoche.
+// Devuelve un valor negativo si [date] ya pasó hoy.
+int _daysFromToday(DateTime date) {
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+  final day = DateTime(date.year, date.month, date.day);
+  return day.difference(today).inDays;
 }
 
 // We removed the Preseason races because there are no bets on those types of races.
