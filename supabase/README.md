@@ -30,5 +30,27 @@ bcrypt. Tras el primer login de cada usuario, la tabla quedará migrada.
 
 ## Row Level Security (issue #8)
 
-Consulta [`rls_policies.sql`](./rls_policies.sql) para habilitar RLS con las
-políticas necesarias para el funcionamiento actual de la app.
+La app actual usa la anon key (sin Supabase Auth). Para que el login y las
+apuestas funcionen, en `users_f1` y `bets` debe haber RLS activado **y** el rol
+`anon` debe tener los privilegios base de la tabla:
+
+```sql
+-- users_f1: solo lectura (login)
+alter table public.users_f1 enable row level security;
+grant select on public.users_f1 to anon;
+create policy "login puede leer usuarios"
+  on public.users_f1 for select to anon using (true);
+
+-- bets: SELECT / INSERT / UPDATE (apostar y consultar)
+alter table public.bets enable row level security;
+grant select, insert, update on public.bets to anon;
+create policy "cualquiera puede ver las apuestas"
+  on public.bets for select to anon using (true);
+create policy "cualquiera puede apostar"
+  on public.bets for insert to anon with check (true);
+create policy "cualquiera puede actualizar su apuesta"
+  on public.bets for update to anon using (true) with check (true);
+```
+
+Nota: sin el `grant` sobre la tabla, aunque exista política RLS, Postgres
+devuelve `permission denied for table ... (42501)`.
