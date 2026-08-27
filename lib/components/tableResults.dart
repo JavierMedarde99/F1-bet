@@ -41,8 +41,8 @@ class _TableResultsState extends State<TableResults> {
         )
         .toList();
 
-    // El ganador es quien tiene MENOR diferencia con el resultado real
-    list.sort((a, b) => a.totalDifferense.compareTo(b.totalDifferense));
+    // La mayor diferencia se muestra primero (orden descendente)
+    list.sort((a, b) => b.totalDifferense.compareTo(a.totalDifferense));
 
     return list;
   }
@@ -68,7 +68,7 @@ class _TableResultsState extends State<TableResults> {
             rows: List.generate(resultTable.length, (index) {
               final result = resultTable[index];
 
-              // Ganador(es): toda fila con la diferencia mínima (incluye empates)
+              // Mayor(es) diferencia: toda fila con la diferencia máxima (incluye empates)
               final bool isWinner =
                   result.totalDifferense == resultTable.first.totalDifferense;
 
@@ -77,8 +77,8 @@ class _TableResultsState extends State<TableResults> {
                   Set<WidgetState> states,
                 ) {
                   if (isWinner) {
-                    // Ganador: fila destacada con acento lima
-                    return GridColors.primaryContainer.withValues(alpha: 0.12);
+                    // Mayor diferencia: fila destacada en rojo corsa
+                    return GridColors.rossoCorsa.withValues(alpha: 0.12);
                   }
                   return null;
                 }),
