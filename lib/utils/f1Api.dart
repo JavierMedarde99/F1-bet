@@ -23,6 +23,8 @@ Future<List<Circuit>> getCircuits() async {
           circuit['date_end'],
         ).difference(DateTime.now()).inDays;
 
+        final dateEnd = DateTime.parse(circuit['date_end']);
+
         if (difference <= 0) {
           circuits.add(
             Circuit(
@@ -30,6 +32,7 @@ Future<List<Circuit>> getCircuits() async {
               circuit['country_flag'],
               circuit['meeting_key'],
               CircuitsState.result,
+              dateEnd: dateEnd,
             ),
           );
         } else if (difference < 7) {
@@ -39,6 +42,7 @@ Future<List<Circuit>> getCircuits() async {
               circuit['country_flag'],
               circuit['meeting_key'],
               CircuitsState.bet,
+              dateEnd: dateEnd,
             ),
           );
         } else {
@@ -48,6 +52,7 @@ Future<List<Circuit>> getCircuits() async {
               circuit['country_flag'],
               circuit['meeting_key'],
               CircuitsState.future,
+              dateEnd: dateEnd,
             ),
           );
         }

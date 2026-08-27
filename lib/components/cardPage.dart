@@ -5,8 +5,14 @@ class Cardpage extends StatelessWidget {
   final Image image;
   final String text;
   final Widget container;
+  final String? date;
 
-  Cardpage({required this.image, required this.text, required this.container});
+  Cardpage({
+    required this.image,
+    required this.text,
+    required this.container,
+    this.date,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +50,16 @@ class Cardpage extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
+
+                    if (date != null) ...[
+                      const SizedBox(height: GridSpacing.unit),
+                      Text(
+                        date!,
+                        style: GridTypography.dataMono(
+                          color: GridColors.outline,
+                        ),
+                      ),
+                    ],
 
                     const SizedBox(height: GridSpacing.unit * 3),
 
