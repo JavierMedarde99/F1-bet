@@ -23,6 +23,12 @@ alter table public.bets enable row level security;
 revoke all on public.users_f1 from anon, authenticated;
 revoke all on public.bets from anon, authenticated;
 
+-- IMPORTANTE: tras el revoke hay que volver a otorgar los privilegios base de
+-- tabla al rol anon. Sin el GRANT, Postgres devuelve "permission denied for
+-- table ... (42501)" aunque existan políticas RLS (una RLS sin GRANT falla).
+grant select on public.users_f1 to anon;
+grant select, insert, update on public.bets to anon;
+
 -- ---------------------------------------------------------------------------
 -- users_f1
 -- La app solo necesita: SELECT (id, password) para validar el login.
