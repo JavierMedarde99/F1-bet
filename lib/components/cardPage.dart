@@ -30,11 +30,11 @@ class Cardpage extends StatelessWidget {
         child: Row(
           children: [
             /// IMAGEN
-            Expanded(flex: 1, child: ClipRect(child: image)),
+            Expanded(flex: 3, child: ClipRect(child: image)),
 
             /// content with the container
             Expanded(
-              flex: 1,
+              flex: 5,
               child: Padding(
                 padding: const EdgeInsets.all(GridSpacing.gutter),
                 child: Column(
