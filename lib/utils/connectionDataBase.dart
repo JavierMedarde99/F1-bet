@@ -1,8 +1,5 @@
 import 'package:bcrypt/bcrypt.dart';
-import 'package:f1/models/ranking.dart';
-import 'package:f1/models/resultsRaces.dart';
 import 'package:f1/models/resultsUser.dart';
-import 'package:f1/utils/f1Api.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -177,85 +174,5 @@ Future<void> _upgradeStoredPasswordToHash(int userId, String plain) async {
         .eq('id', userId);
   } catch (error) {
     print('Error actualizando el hash de la contraseña: $error');
-  }
-}
-
-// Clasificación de pérdidas acumuladas por usuario.
-//
-// Solo cuentan las carreras con resultado válido (posiciones >= 1);
-// las carreras sin resultado o con error de API se ignoran.
-// Ordenado DESCENDENTE: el mayor perdedor primero.
-Future<List<RankingUser>> getRankingByLosses() async {
-  try {
-    // 1. Obtener todas las apuestas y agruparlas por carrera
-    final bets = await Supabase.instance.client.from('bets').select();
-
-    final Map<String, List<dynamic>> betsByMeeting = {};
-    for (final bet in bets as List) {
-      final meeting = bet['meeting_bet'].toString();
-      betsByMeeting.putIfAbsent(meeting, () => []).add(bet);
-    }
-
-    // 2. Nombres de usuario
-    final users = await Supabase.instance.client
-        .from('users_f1')
-        .select('id, user_name');
-    String nameOf(int userId) {
-      for (final user in users as List) {
-        if (user['id'] == userId) return user['user_name'] ?? 'USUARIO ?';
-      }
-      return 'USUARIO ?';
-    }
-
-    // 3. Acumular diferencias por usuario en carreras con resultado válido
-    final Map<int, Map<String, int>> acc = {};
-    for (final entry in betsByMeeting.entries) {
-      final int? meetingKey = int.tryParse(entry.key);
-      if (meetingKey == null) continue;
-
-      ResultsRaces raceResults;
-      try {
-        raceResults = await getResults(meetingKey);
-      } catch (_) {
-        continue; // carrera sin datos en la API
-      }
-      if (raceResults.alonsoPositionBet < 1 ||
-          raceResults.sainzPositionBet < 1) {
-        continue; // resultado no válido aún
-      }
-
-      for (final bet in entry.value) {
-        final int userId = bet['user_id'] as int;
-        final int losses =
-            (raceResults.alonsoPositionBet - (bet['alonso_position'] as int))
-                .abs() +
-            (raceResults.sainzPositionBet - (bet['sainz_position'] as int))
-                .abs();
-
-        final current = acc.putIfAbsent(
-          userId,
-          () => {'losses': 0, 'races': 0},
-        );
-        current['losses'] = current['losses']! + losses;
-        current['races'] = current['races']! + 1;
-      }
-    }
-
-    // 4. Construir ranking ordenado descendente por pérdidas
-    final ranking = acc.entries
-        .map(
-          (e) => RankingUser(
-            name: nameOf(e.key),
-            totalLosses: e.value['losses']!,
-            racesCount: e.value['races']!,
-          ),
-        )
-        .toList();
-
-    ranking.sort((a, b) => b.totalLosses.compareTo(a.totalLosses));
-    return ranking;
-  } catch (error) {
-    print('Error fetching ranking: $error');
-    return [];
   }
 }
