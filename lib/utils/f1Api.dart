@@ -33,6 +33,7 @@ Future<List<Circuit>> getCircuits() async {
               circuit['country_flag'],
               circuit['meeting_key'],
               CircuitsState.result,
+              dateEnd: dateEnd,
             ),
           );
         } else if (difference < 7) {
@@ -42,6 +43,7 @@ Future<List<Circuit>> getCircuits() async {
               circuit['country_flag'],
               circuit['meeting_key'],
               CircuitsState.bet,
+              dateEnd: dateEnd,
             ),
           );
         } else {
@@ -51,6 +53,7 @@ Future<List<Circuit>> getCircuits() async {
               circuit['country_flag'],
               circuit['meeting_key'],
               CircuitsState.future,
+              dateEnd: dateEnd,
             ),
           );
         }

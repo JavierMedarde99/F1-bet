@@ -18,6 +18,13 @@ class ListRaces extends StatefulWidget {
 class _ListRacesState extends State<ListRaces> {
   late Future<List<Circuit>> circuits;
 
+  // Formatea la fecha de la carrera como dd/MM/yyyy
+  String _formatDate(DateTime date) {
+    final d = date.day.toString().padLeft(2, '0');
+    final m = date.month.toString().padLeft(2, '0');
+    return '$d/$m/${date.year}';
+  }
+
   @override
   void initState() {
     super.initState();
@@ -125,6 +132,7 @@ class _ListRacesState extends State<ListRaces> {
                       },
                     ),
                     text: circuit.name,
+                    date: _formatDate(circuit.dateEnd),
                     container: Container(
                       child: actionCircuit(
                         circuit.state,

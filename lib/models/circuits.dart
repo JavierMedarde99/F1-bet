@@ -5,5 +5,12 @@ class Circuit {
   final String imagen;
   final int meetingId;
   final CircuitsState state;
-  const Circuit(this.name, this.imagen, this.meetingId, this.state);
+  final DateTime dateEnd;
+  const Circuit(
+    this.name,
+    this.imagen,
+    this.meetingId,
+    this.state, {
+    required this.dateEnd,
+  });
 }
