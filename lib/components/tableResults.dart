@@ -58,52 +58,76 @@ class _TableResultsState extends State<TableResults> {
             style: GridTypography.labelCaps(color: GridColors.lime),
           ),
           const SizedBox(height: GridSpacing.gutter),
-          DataTable(
-            columns: const <DataColumn>[
-              DataColumn(label: Text('USUARIO')),
-              DataColumn(label: Text('ALONSO')),
-              DataColumn(label: Text('SAINZ')),
-              DataColumn(label: Text('RESTO')),
-            ],
-            rows: List.generate(resultTable.length, (index) {
-              final result = resultTable[index];
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              horizontalMargin: 0,
+              columnSpacing: GridSpacing.unit * 6,
+              columns: const <DataColumn>[
+                DataColumn(label: Text('USUARIO')),
+                DataColumn(label: Text('ALONSO')),
+                DataColumn(label: Text('SAINZ')),
+                DataColumn(label: Text('RESTO')),
+              ],
+              rows: List.generate(resultTable.length, (index) {
+                final result = resultTable[index];
 
-              // Mayor(es) diferencia: toda fila con la diferencia máxima (incluye empates)
-              final bool isWinner =
-                  result.totalDifferense == resultTable.first.totalDifferense;
+                // Mayor(es) diferencia: toda fila con la diferencia máxima (incluye empates)
+                final bool isWinner =
+                    result.totalDifferense == resultTable.first.totalDifferense;
 
-              return DataRow(
-                color: WidgetStateProperty.resolveWith<Color?>((
-                  Set<WidgetState> states,
-                ) {
-                  if (isWinner) {
-                    // Mayor diferencia: fila destacada en rojo corsa
-                    return GridColors.rossoCorsa.withValues(alpha: 0.12);
-                  }
-                  return null;
-                }),
-                cells: [
-                  DataCell(
-                    Text(
-                      result.name.toUpperCase(),
-                      style: GridTypography.dataMono(
-                        color: GridColors.onSurface,
+                return DataRow(
+                  color: WidgetStateProperty.resolveWith<Color?>((
+                    Set<WidgetState> states,
+                  ) {
+                    if (isWinner) {
+                      // Mayor diferencia: fila destacada en rojo corsa
+                      return GridColors.rossoCorsa.withValues(alpha: 0.12);
+                    }
+                    return null;
+                  }),
+                  cells: [
+                    DataCell(
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 140),
+                        child: Text(
+                          result.name.toUpperCase(),
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: false,
+                          style: GridTypography.dataMono(
+                            color: GridColors.onSurface,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                  DataCell(Text('${result.positionAlonso}')),
-                  DataCell(Text('${result.positionSainz}')),
-                  DataCell(
-                    Text(
-                      '${result.totalDifferense}',
-                      style: GridTypography.dataMono(
-                        color: GridColors.rossoCorsa,
+                    DataCell(
+                      Text(
+                        '${result.positionAlonso}',
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: false,
                       ),
                     ),
-                  ),
-                ],
-              );
-            }),
+                    DataCell(
+                      Text(
+                        '${result.positionSainz}',
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: false,
+                      ),
+                    ),
+                    DataCell(
+                      Text(
+                        '${result.totalDifferense}',
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: false,
+                        style: GridTypography.dataMono(
+                          color: GridColors.rossoCorsa,
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }),
+            ),
           ),
         ],
       ),
