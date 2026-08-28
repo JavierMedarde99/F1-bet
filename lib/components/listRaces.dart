@@ -133,7 +133,8 @@ class _ListRacesState extends State<ListRaces> {
                     ),
                     text: circuit.name,
                     date: _formatDate(circuit.dateEnd),
-                    container: Container(
+                    container: SizedBox(
+                      width: double.infinity,
                       child: actionCircuit(
                         circuit.state,
                         circuit.meetingId.toString(),
