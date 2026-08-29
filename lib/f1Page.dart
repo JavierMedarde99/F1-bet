@@ -20,7 +20,14 @@ class F1page extends StatelessWidget {
               color: GridColors.lime,
             ),
             const SizedBox(width: 12),
-            const Text('F1 ALL RACES'),
+            const Text(
+              'F1 ALL RACES',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
           ],
         ),
         actions: [
