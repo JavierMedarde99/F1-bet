@@ -49,6 +49,13 @@ class _ListRacesState extends State<ListRaces> {
     });
   }
 
+  // Mensaje mostrado ante un error: específico para la API no disponible
+  // temporalmente (sesión en directo), genérico para el resto.
+  String _errorMessage(Object? error) {
+    if (error is ApiUnavailableException) return error.message;
+    return "Error loading circuits, please try again.";
+  }
+
   // Depending on the race status, a button will be created for the following two actions: betting or viewing results.
   ElevatedButton actionCircuit(CircuitsState state, String meetingId) {
     switch (state) {
@@ -147,7 +154,7 @@ class _ListRacesState extends State<ListRaces> {
           );
         } else if (snapshot.hasError) {
           return Errorretry(
-            message: "Error loading circuits, please try again.",
+            message: _errorMessage(snapshot.error),
             onRetry: _retryLoad,
           );
         } else {

@@ -4,11 +4,37 @@ import 'package:f1/models/resultsRaces.dart';
 import 'package:f1/utils/constants.dart';
 import 'package:http/http.dart' as http;
 
+// Marca que identifica el bloqueo de OpenF1 durante una sesión de F1 en directo.
+const String _liveF1SessionMarker = 'Live F1 session in progress';
+
+// Excepción lanzada cuando la API de OpenF1 está temporalmente no disponible
+// (por ejemplo, bloqueada durante una sesión en directo).
+class ApiUnavailableException implements Exception {
+  final String message;
+  const ApiUnavailableException(this.message);
+
+  @override
+  String toString() => message;
+}
+
+// Si la respuesta HTTP es un 401 por sesión en directo, lanza
+// ApiUnavailableException; en caso contrario devuelve la respuesta sin cambios.
+http.Response _checkLiveSessionBlock(http.Response response) {
+  if (response.statusCode == 401 &&
+      response.body.contains(_liveF1SessionMarker)) {
+    throw const ApiUnavailableException(
+      'La API de F1 no está disponible temporalmente. Espera a que termine la '
+      'sesión de F1 en directo para ingresar.',
+    );
+  }
+  return response;
+}
+
 // Obtain all the circuits for this year, obtaining only the flag, the id and the name
 Future<List<Circuit>> getCircuits() async {
   String url = URL_CIRCUITS + DateTime.now().year.toString();
 
-  final response = await http.get(Uri.parse(url));
+  final response = _checkLiveSessionBlock(await http.get(Uri.parse(url)));
 
   JsonDecoder decoder = const JsonDecoder();
   List<Circuit> circuits = [];
@@ -100,7 +126,7 @@ Future<int> getResultsByDriver(String sessionId, int driverId) async {
   String url = URL_RESULTS
       .replaceAll("{driverId}", driverId.toString())
       .replaceAll("{sessionId}", sessionId);
-  final response = await http.get(Uri.parse(url));
+  final response = _checkLiveSessionBlock(await http.get(Uri.parse(url)));
   if (response.statusCode == 200) {
     JsonDecoder decoder = const JsonDecoder();
     var data = decoder.convert(response.body);
@@ -121,7 +147,7 @@ Future<int> getResultsByDriver(String sessionId, int driverId) async {
 Future<int> getRace(int meetingKey) async {
   String url = URL_RACES + meetingKey.toString();
 
-  final response = await http.get(Uri.parse(url));
+  final response = _checkLiveSessionBlock(await http.get(Uri.parse(url)));
   if (response.statusCode == 200) {
     JsonDecoder decoder = const JsonDecoder();
     var data = decoder.convert(response.body);
