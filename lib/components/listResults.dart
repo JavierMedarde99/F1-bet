@@ -18,7 +18,7 @@ class ListResults extends StatefulWidget {
 }
 
 class _ListResultsState extends State<ListResults> {
-  late Future<List<Results>> results;
+  late Future<Results> results;
 
   @override
   void initState() {
@@ -33,12 +33,10 @@ class _ListResultsState extends State<ListResults> {
           getResults(widget.meetingKey),
           getBetsForMeeting(widget.meetingKey.toString()),
         ]).then((results) {
-          return [
-            Results(
-              resultsRaces: results[0] as ResultsRaces,
-              resultsUser: results[1] as List<ResultsUser>,
-            ),
-          ];
+          return Results(
+            resultsRaces: results[0] as ResultsRaces,
+            resultsUser: results[1] as List<ResultsUser>,
+          );
         });
   }
 
@@ -63,7 +61,7 @@ class _ListResultsState extends State<ListResults> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Results>>(
+    return FutureBuilder<Results>(
       future: results,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -86,24 +84,24 @@ class _ListResultsState extends State<ListResults> {
 
         final races = snapshot.data!;
 
-        if (races[0].resultsRaces.alonsoPositionBet == -1 ||
-            races[0].resultsRaces.sainzPositionBet == -1) {
+        if (races.resultsRaces.alonsoPositionBet == -1 ||
+            races.resultsRaces.sainzPositionBet == -1) {
           return _screenMessage("No hay resultados disponibles");
         }
 
-        if (races[0].resultsRaces.alonsoPositionBet == -2) {
+        if (races.resultsRaces.alonsoPositionBet == -2) {
           return _screenMessage(
             "Alonso no terminó la carrera o no tiene posición asignada",
           );
         }
 
-        if (races[0].resultsRaces.sainzPositionBet == -2) {
+        if (races.resultsRaces.sainzPositionBet == -2) {
           return _screenMessage(
             "Sainz no terminó la carrera o no tiene posición asignada",
           );
         }
 
-        if (races[0].resultsUser.isEmpty) {
+        if (races.resultsUser.isEmpty) {
           return _screenMessage(
             "No hay apuestas en esta carrera, no pierde nadie",
           );
@@ -115,14 +113,12 @@ class _ListResultsState extends State<ListResults> {
             children: [
               const SizedBox(height: GridSpacing.margin),
               ResultF1(
-                alonsoPosition: races[0].resultsRaces.alonsoPositionBet
-                    .toString(),
-                sainzPosition: races[0].resultsRaces.sainzPositionBet
-                    .toString(),
+                alonsoPosition: races.resultsRaces.alonsoPositionBet.toString(),
+                sainzPosition: races.resultsRaces.sainzPositionBet.toString(),
               ),
               Expanded(
                 child: SingleChildScrollView(
-                  child: TableResults(results: races[0]),
+                  child: TableResults(results: races),
                 ),
               ),
             ],
