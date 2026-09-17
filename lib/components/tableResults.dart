@@ -13,15 +13,15 @@ class TableResults extends StatefulWidget {
 }
 
 class _TableResultsState extends State<TableResults> {
-  int getDifferense(
+  int getDifference(
     int alonsoPosition,
     int sainzPosition,
     int alonsoPositionBet,
     int sainzPositionBet,
   ) {
-    int differenseAlonso = (alonsoPositionBet - alonsoPosition).abs();
-    int differenseSainz = (sainzPositionBet - sainzPosition).abs();
-    return differenseAlonso + differenseSainz;
+    int differenceAlonso = (alonsoPositionBet - alonsoPosition).abs();
+    int differenceSainz = (sainzPositionBet - sainzPosition).abs();
+    return differenceAlonso + differenceSainz;
   }
 
   List<ResultTable> get resultTable {
@@ -31,7 +31,7 @@ class _TableResultsState extends State<TableResults> {
             name: result.name,
             positionAlonso: result.alonsoPosition,
             positionSainz: result.sainzPosition,
-            totalDifferense: getDifferense(
+            totalDifference: getDifference(
               widget.results.resultsRaces.alonsoPositionBet,
               widget.results.resultsRaces.sainzPositionBet,
               result.alonsoPosition,
@@ -42,7 +42,7 @@ class _TableResultsState extends State<TableResults> {
         .toList();
 
     // La mayor diferencia se muestra primero (orden descendente)
-    list.sort((a, b) => b.totalDifferense.compareTo(a.totalDifferense));
+    list.sort((a, b) => b.totalDifference.compareTo(a.totalDifference));
 
     return list;
   }
@@ -74,7 +74,7 @@ class _TableResultsState extends State<TableResults> {
 
                 // Mayor(es) diferencia: toda fila con la diferencia máxima (incluye empates)
                 final bool isWinner =
-                    result.totalDifferense == resultTable.first.totalDifferense;
+                    result.totalDifference == resultTable.first.totalDifference;
 
                 return DataRow(
                   color: WidgetStateProperty.resolveWith<Color?>((
@@ -116,7 +116,7 @@ class _TableResultsState extends State<TableResults> {
                     ),
                     DataCell(
                       Text(
-                        '${result.totalDifferense}',
+                        '${result.totalDifference}',
                         overflow: TextOverflow.ellipsis,
                         softWrap: false,
                         style: GridTypography.dataMono(
