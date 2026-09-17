@@ -7,7 +7,8 @@ class Cardpage extends StatelessWidget {
   final Widget container;
   final String? date;
 
-  Cardpage({
+  const Cardpage({
+    super.key,
     required this.image,
     required this.text,
     required this.container,
