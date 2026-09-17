@@ -31,6 +31,11 @@ class F1page extends StatelessWidget {
           ],
         ),
         actions: [
+          IconButton(
+            tooltip: 'Cerrar sesión',
+            icon: const Icon(Icons.logout),
+            onPressed: () => _logout(context),
+          ),
           // Chip del año en curso con borde lima
           Container(
             margin: const EdgeInsets.only(right: GridSpacing.gutter),
@@ -50,5 +55,9 @@ class F1page extends StatelessWidget {
       ),
       body: Center(child: ListRaces(userId: userId)),
     );
+  }
+
+  void _logout(BuildContext context) {
+    Navigator.of(context).popUntil((route) => route.isFirst);
   }
 }
