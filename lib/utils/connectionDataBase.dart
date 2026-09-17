@@ -35,13 +35,13 @@ Future<List<ResultsUser>> getBetsForMeeting(String meetingBet) async {
 
     final response = await Supabase.instance.client
         .from('bets')
-        .select()
+        .select('*, users_f1(user_name)')
         .eq('meeting_bet', meetingBet);
 
     for (var bet in response) {
       resultsUser.add(
         ResultsUser(
-          name: await getName(bet['user_id']),
+          name: bet['users_f1']?['user_name'] ?? 'Usuario desconocido',
           alonsoPosition: bet['alonso_position'],
           sainzPosition: bet['sainz_position'],
         ),
@@ -52,26 +52,6 @@ Future<List<ResultsUser>> getBetsForMeeting(String meetingBet) async {
   } catch (error) {
     print('Error fetching bets: $error');
     return [];
-  }
-}
-
-// get a user's name
-Future<String> getName(int idUser) async {
-  try {
-    final response = await Supabase.instance.client
-        .from('users_f1')
-        .select('user_name')
-        .eq('id', idUser)
-        .maybeSingle();
-
-    if (response != null && response['user_name'] != null) {
-      return response['user_name'];
-    } else {
-      return 'Usuario desconocido';
-    }
-  } catch (error) {
-    print('Error fetching user name: $error');
-    return 'Usuario desconocido';
   }
 }
 
