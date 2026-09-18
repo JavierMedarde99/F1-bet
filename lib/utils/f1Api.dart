@@ -61,7 +61,7 @@ Future<List<Circuit>> getCircuits() async {
         // La fecha máxima para apostar es el jueves de la semana de la carrera.
         // La carrera (date_end) suele ser el domingo, por lo que el jueves
         // equivale a date_end - 3 días. A partir del viernes pasa a RESULTADOS.
-        final dateEnd = DateTime.parse(circuit['date_end']);
+        final dateEnd = DateTime.parse(circuit['date_end']).toUtc();
         final jueves = dateEnd.subtract(const Duration(days: 3));
         final int difference = _daysFromToday(jueves);
 
@@ -105,12 +105,13 @@ Future<List<Circuit>> getCircuits() async {
   return circuits;
 }
 
-// Días desde hoy hasta [date], normalizando ambos a medianoche.
+// Días desde hoy hasta [date], normalizando ambos a medianoche UTC para que
+// la clasificación no dependa de la zona horaria del dispositivo.
 // Devuelve un valor negativo si [date] ya pasó hoy.
 int _daysFromToday(DateTime date) {
-  final now = DateTime.now();
-  final today = DateTime(now.year, now.month, now.day);
-  final day = DateTime(date.year, date.month, date.day);
+  final now = DateTime.now().toUtc();
+  final today = DateTime.utc(now.year, now.month, now.day);
+  final day = DateTime.utc(date.year, date.month, date.day);
   return day.difference(today).inDays;
 }
 
