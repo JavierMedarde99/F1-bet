@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:f1/models/circuits.dart';
 import 'package:f1/models/resultsRaces.dart';
@@ -30,11 +31,23 @@ http.Response _checkLiveSessionBlock(http.Response response) {
   return response;
 }
 
+// Realiza una petición GET con un límite de espera para evitar que la app se
+// quede esperando indefinidamente si la API de OpenF1 no responde.
+Future<http.Response> _getWithTimeout(String url) async {
+  try {
+    return await http.get(Uri.parse(url)).timeout(const Duration(seconds: 10));
+  } on TimeoutException {
+    throw Exception(
+      'La API de F1 no responde a tiempo. Inténtalo de nuevo más tarde.',
+    );
+  }
+}
+
 // Obtain all the circuits for this year, obtaining only the flag, the id and the name
 Future<List<Circuit>> getCircuits() async {
   String url = URL_CIRCUITS + DateTime.now().year.toString();
 
-  final response = _checkLiveSessionBlock(await http.get(Uri.parse(url)));
+  final response = _checkLiveSessionBlock(await _getWithTimeout(url));
 
   JsonDecoder decoder = const JsonDecoder();
   List<Circuit> circuits = [];
@@ -126,7 +139,7 @@ Future<int> getResultsByDriver(String sessionId, int driverId) async {
   String url = URL_RESULTS
       .replaceAll("{driverId}", driverId.toString())
       .replaceAll("{sessionId}", sessionId);
-  final response = _checkLiveSessionBlock(await http.get(Uri.parse(url)));
+  final response = _checkLiveSessionBlock(await _getWithTimeout(url));
   if (response.statusCode == 200) {
     JsonDecoder decoder = const JsonDecoder();
     var data = decoder.convert(response.body);
@@ -147,7 +160,7 @@ Future<int> getResultsByDriver(String sessionId, int driverId) async {
 Future<int> getRace(int meetingKey) async {
   String url = URL_RACES + meetingKey.toString();
 
-  final response = _checkLiveSessionBlock(await http.get(Uri.parse(url)));
+  final response = _checkLiveSessionBlock(await _getWithTimeout(url));
   if (response.statusCode == 200) {
     JsonDecoder decoder = const JsonDecoder();
     var data = decoder.convert(response.body);
