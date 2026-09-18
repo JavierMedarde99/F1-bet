@@ -6,6 +6,14 @@
 - **`bets`**: `user_id`, `meeting_bet`, `alonso_position`, `sainz_position`
 - **`results`**: `meeting_bet`, `alonso_position`, `sainz_position`
 
+## Migraciones
+
+El esquema versionado se encuentra en `supabase/migrations/`. Los ficheros deben
+ejecutarse **manualmente** en el SQL Editor de Supabase (no se aplican de forma
+automática). Son **idempotentes** (`CREATE TABLE IF NOT EXISTS`), por lo que se
+pueden re-ejecutar sin riesgo.
+
+
 ## Contraseñas hasheadas (issue #1)
 
 Las contraseñas de `users_f1.password` deben almacenarse como **hash bcrypt**, nunca en texto plano.
