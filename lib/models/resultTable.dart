@@ -2,12 +2,12 @@ class ResultTable {
   final String name;
   final int positionAlonso;
   final int positionSainz;
-  final int totalDifferense;
+  final int totalDifference;
 
   const ResultTable({
     required this.name,
     required this.positionAlonso,
     required this.positionSainz,
-    required this.totalDifferense,
+    required this.totalDifference,
   });
 }
