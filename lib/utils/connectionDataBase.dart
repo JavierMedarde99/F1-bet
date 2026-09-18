@@ -4,6 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+// Error type for database operations. Kept intentionally simple: callers
+// can catch DatabaseException to distinguish DB failures from other errors.
+class DatabaseException implements Exception {
+  final String message;
+  const DatabaseException(this.message);
+
+  @override
+  String toString() => 'DatabaseException: $message';
+}
+
+// Logs a failed database call with a clear, consistent prefix so failures
+// are never silently swallowed. UI behavior is unchanged for now.
+void _reportError(String operation, Object error) {
+  print('[DatabaseError] $operation failed: $error');
+}
+
 // conection to the dataBase
 Future<void> connectiondatabase() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,7 +66,7 @@ Future<List<ResultsUser>> getBetsForMeeting(String meetingBet) async {
 
     return resultsUser;
   } catch (error) {
-    print('Error fetching bets: $error');
+    _reportError('getBetsForMeeting', error);
     return [];
   }
 }
@@ -70,7 +86,7 @@ Future<Map<String, dynamic>?> getBetForMeetingAndUser(
 
     return response;
   } catch (error) {
-    print('Error fetching bet: $error');
+    _reportError('getBetForMeetingAndUser', error);
     return null;
   }
 }
@@ -101,7 +117,7 @@ Future<bool> sendBet(
 
     return true;
   } catch (error) {
-    print('Error sending bet: $error');
+    _reportError('sendBet', error);
     return false;
   }
 }
@@ -134,7 +150,7 @@ Future<int> validateLogin(String username, String password) async {
 
     return 0;
   } catch (error) {
-    print('Error al obtener usuario: $error');
+    _reportError('validateLogin', error);
     return 0;
   }
 }
@@ -153,6 +169,6 @@ Future<void> _upgradeStoredPasswordToHash(int userId, String plain) async {
         .update({'password': hash})
         .eq('id', userId);
   } catch (error) {
-    print('Error actualizando el hash de la contraseña: $error');
+    _reportError('_upgradeStoredPasswordToHash', error);
   }
 }
