@@ -49,6 +49,8 @@ class _TableResultsState extends State<TableResults> {
 
   @override
   Widget build(BuildContext context) {
+    final List<ResultTable> results = resultTable;
+
     return Container(
       padding: const EdgeInsets.all(GridSpacing.gutter),
       child: Column(
@@ -69,12 +71,12 @@ class _TableResultsState extends State<TableResults> {
                 DataColumn(label: Text('SAINZ')),
                 DataColumn(label: Text('RESTO')),
               ],
-              rows: List.generate(resultTable.length, (index) {
-                final result = resultTable[index];
+              rows: List.generate(results.length, (index) {
+                final result = results[index];
 
                 // Mayor(es) diferencia: toda fila con la diferencia máxima (incluye empates)
                 final bool isWinner =
-                    result.totalDifference == resultTable.first.totalDifference;
+                    result.totalDifference == results.first.totalDifference;
 
                 return DataRow(
                   color: WidgetStateProperty.resolveWith<Color?>((
