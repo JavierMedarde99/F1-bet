@@ -122,6 +122,7 @@ class _ListRacesState extends State<ListRaces> {
                   final circuit = data[index];
 
                   return Cardpage(
+                    key: ValueKey(circuit.meetingId),
                     image: Image.network(
                       circuit.imagen,
                       height: double.infinity,
