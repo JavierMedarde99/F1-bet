@@ -22,7 +22,7 @@ Required at runtime and for asset bundling. Two vars:
 `.env` is gitignored. `.env.example` exists as template. CI generates it from GitHub Actions secrets before building.
 
 ## CI gotcha
-`.github/workflows/ci.yml ` has a **trailing space in the filename** — GitHub does not detect it. Renaming it would activate checks that currently fail (no `test/` directory, 15 files fail `dart format`). Fix the name + format the repo + add a placeholder test before renaming.
+`.github/workflows/ci.yml ` **had a trailing space in the filename** — GitHub did not detect it. It was renamed to `ci.yml`, and the repo was formatted + tests were added, so the checks (analyze, format gate, tests) now pass. The workflow needs `.env` (created from GitHub secrets) because the asset bundle requires it before `flutter test`.
 
 ## Architecture
 - `lib/main.dart` — entry point, inits Supabase, shows LoginPage
