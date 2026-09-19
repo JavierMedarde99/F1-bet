@@ -17,6 +17,7 @@ class ListRaces extends StatefulWidget {
 
 class _ListRacesState extends State<ListRaces> {
   late Future<List<Circuit>> circuits;
+  bool _isRefreshing = false;
 
   // Formatea la fecha de la carrera como dd/MM/yyyy
   String _formatDate(DateTime date) {
@@ -32,13 +33,20 @@ class _ListRacesState extends State<ListRaces> {
   }
 
   // Recarga la lista de circuitos; el FutureBuilder muestra el spinner
-  // hasta que el nuevo Future termina.
+  // hasta que el nuevo Future termina. Evita peticiones concurrentes si
+  // el usuario dispara el pull-to-refresh varias veces seguidas.
   Future<void> _reloadCircuits() {
+    if (_isRefreshing) return Future<void>.value();
+    _isRefreshing = true;
     final future = getCircuits();
-    setState(() {
-      circuits = future;
+    if (mounted) {
+      setState(() {
+        circuits = future;
+      });
+    }
+    return future.whenComplete(() {
+      _isRefreshing = false;
     });
-    return future;
   }
 
   // Reintenta la carga de circuitos
