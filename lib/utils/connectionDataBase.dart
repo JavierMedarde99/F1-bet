@@ -36,12 +36,39 @@ Future<void> connectiondatabase() async {
     anonKey = const String.fromEnvironment('ANON_KEY');
   }
 
-  // Validación final
-  if (url.isEmpty || anonKey.isEmpty) {
-    throw Exception('DATABASE_URL or ANON_KEY no está definido!');
+  // Recortar espacios en blanco accidentales
+  final String urlTrimmed = url.trim();
+  final String anonKeyTrimmed = anonKey.trim();
+
+  String? misconfigured;
+  if (urlTrimmed.isEmpty || !_isValidUrl(urlTrimmed)) {
+    misconfigured =
+        'DATABASE_URL no está definido o no es una URL válida (se espera https).';
+  } else if (anonKeyTrimmed.isEmpty) {
+    misconfigured = 'ANON_KEY no está definido.';
   }
 
-  await Supabase.initialize(url: url, anonKey: anonKey);
+  if (misconfigured != null) {
+    throw Exception('Configuración inválida: $misconfigured');
+  }
+
+  await Supabase.initialize(url: urlTrimmed, anonKey: anonKeyTrimmed);
+}
+
+bool _isValidUrl(String value) {
+  final parsed = Uri.tryParse(value);
+  return parsed != null && parsed.hasScheme;
+}
+
+// Exposed for tests: whether the provided config is present and well-formed.
+bool isConfigurationValid({String? url, String? anonKey}) {
+  final String? urlTrimmed = url?.trim();
+  final String? anonKeyTrimmed = anonKey?.trim();
+  return urlTrimmed != null &&
+      urlTrimmed.isNotEmpty &&
+      _isValidUrl(urlTrimmed) &&
+      anonKeyTrimmed != null &&
+      anonKeyTrimmed.isNotEmpty;
 }
 
 // get all the bets on a race
