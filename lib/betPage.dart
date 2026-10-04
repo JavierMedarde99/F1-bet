@@ -21,7 +21,7 @@ class Betpage extends StatelessWidget {
               color: GridColors.lime,
             ),
             const SizedBox(width: 12),
-            const Text('APUESTA'),
+            Text('APUESTA', style: GridTypography.headlineLgMobile()),
           ],
         ),
       ),

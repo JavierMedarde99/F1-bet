@@ -1,3 +1,4 @@
+import 'package:f1/components/grid_decor.dart';
 import 'package:f1/models/results.dart';
 import 'package:f1/models/resultTable.dart';
 import 'package:f1/utils/theme.dart';
@@ -55,9 +56,18 @@ class _TableResultsState extends State<TableResults> {
       padding: const EdgeInsets.all(GridSpacing.gutter),
       child: Column(
         children: [
-          Text(
-            "TABLA DE RESULTADOS",
-            style: GridTypography.labelCaps(color: GridColors.lime),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const DiagonalAccent(color: GridColors.limeDim, width: 72),
+              const SizedBox(width: GridSpacing.gutter),
+              Text(
+                "TABLA DE RESULTADOS",
+                style: GridTypography.labelCaps(color: GridColors.lime),
+              ),
+              const SizedBox(width: GridSpacing.gutter),
+              const DiagonalAccent(color: GridColors.rossoCorsa, width: 72),
+            ],
           ),
           const SizedBox(height: GridSpacing.gutter),
           SingleChildScrollView(
