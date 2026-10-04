@@ -73,7 +73,9 @@ class LoginPage extends StatelessWidget {
                   const SizedBox(height: GridSpacing.gutter),
                   Text(
                     'F1 APUESTA',
-                    style: GridTypography.headlineLgMobile(color: GridColors.lime),
+                    style: GridTypography.headlineLgMobile(
+                      color: GridColors.lime,
+                    ),
                   ),
                   const SizedBox(height: GridSpacing.unit * 2),
                   const DiagonalAccent(
@@ -96,9 +98,16 @@ class LoginPage extends StatelessWidget {
                       // Borde inferior lima: LED de estado "activo"
                       border: Border(
                         top: const BorderSide(color: GridColors.outlineVariant),
-                        left: const BorderSide(color: GridColors.outlineVariant),
-                        right: const BorderSide(color: GridColors.outlineVariant),
-                        bottom: const BorderSide(color: GridColors.lime, width: 2),
+                        left: const BorderSide(
+                          color: GridColors.outlineVariant,
+                        ),
+                        right: const BorderSide(
+                          color: GridColors.outlineVariant,
+                        ),
+                        bottom: const BorderSide(
+                          color: GridColors.lime,
+                          width: 2,
+                        ),
                       ),
                     ),
                     child: const Formlogin(),

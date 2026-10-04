@@ -56,11 +56,7 @@ class ResultF1 extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // Alonso Box
-                  _telemetryModule(
-                    "Alonso",
-                    alonsoPosition,
-                    GridColors.lime,
-                  ),
+                  _telemetryModule("Alonso", alonsoPosition, GridColors.lime),
 
                   const SizedBox(width: GridSpacing.gutter),
 

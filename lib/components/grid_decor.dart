@@ -92,11 +92,7 @@ class LiveDot extends StatefulWidget {
   final double size;
   final Color color;
 
-  const LiveDot({
-    super.key,
-    this.size = 8,
-    this.color = GridColors.rossoCorsa,
-  });
+  const LiveDot({super.key, this.size = 8, this.color = GridColors.rossoCorsa});
 
   @override
   State<LiveDot> createState() => _LiveDotState();
@@ -118,7 +114,11 @@ class _LiveDotState extends State<LiveDot> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return FadeTransition(
       opacity: CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-      child: Container(width: widget.size, height: widget.size, color: widget.color),
+      child: Container(
+        width: widget.size,
+        height: widget.size,
+        color: widget.color,
+      ),
     );
   }
 }
