@@ -1,5 +1,4 @@
 import 'package:f1/components/error_retry.dart';
-import 'package:f1/components/grid_decor.dart';
 import 'package:f1/components/resultF1.dart';
 import 'package:f1/components/tableResults.dart';
 import 'package:f1/models/results.dart';
@@ -50,18 +49,10 @@ class _ListResultsState extends State<ListResults> {
       child: Center(
         child: Padding(
           padding: const EdgeInsets.all(GridSpacing.margin),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const DiagonalAccent(color: GridColors.outline, width: 72),
-              const SizedBox(height: GridSpacing.gutter),
-              Text(
-                message.toUpperCase(),
-                textAlign: TextAlign.center,
-                style: GridTypography.headlineLgMobile(),
-              ),
-            ],
+          child: Text(
+            message.toUpperCase(),
+            textAlign: TextAlign.center,
+            style: GridTypography.headlineLgMobile(),
           ),
         ),
       ),

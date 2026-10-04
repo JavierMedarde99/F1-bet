@@ -1,4 +1,3 @@
-import 'package:f1/components/grid_decor.dart';
 import 'package:f1/utils/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -32,46 +31,24 @@ class ResultF1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      color: GridColors.containerLowest,
-      child: CustomPaint(
-        // Rejilla de telemetría de fondo (ver DESIGN.md: Telemetry Visuals)
-        painter: GridBackgroundPainter(
-          spacing: 16,
-          color: GridColors.outlineVariant,
-          alpha: 0.25,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(GridSpacing.margin),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                "RESULTADOS DE LA CARRERA",
-                style: GridTypography.labelCaps(),
-              ),
-              const SizedBox(height: GridSpacing.gutter),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Alonso Box
-                  _telemetryModule("Alonso", alonsoPosition, GridColors.lime),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text("RESULTADOS DE LA CARRERA", style: GridTypography.labelCaps()),
+        const SizedBox(height: GridSpacing.gutter),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Alonso Box
+            _telemetryModule("Alonso", alonsoPosition, GridColors.lime),
 
-                  const SizedBox(width: GridSpacing.gutter),
+            const SizedBox(width: GridSpacing.gutter),
 
-                  // Sainz box
-                  _telemetryModule(
-                    "Sainz",
-                    sainzPosition,
-                    GridColors.rossoCorsa,
-                  ),
-                ],
-              ),
-            ],
-          ),
+            // Sainz box
+            _telemetryModule("Sainz", sainzPosition, GridColors.rossoCorsa),
+          ],
         ),
-      ),
+      ],
     );
   }
 }
