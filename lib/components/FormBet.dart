@@ -1,4 +1,3 @@
-import 'package:f1/components/grid_decor.dart';
 import 'package:f1/utils/connectionDataBase.dart';
 import 'package:f1/utils/theme.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +73,7 @@ class _FormBetState extends State<FormBet> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Las posiciones deben estar entre 1 y 20'),
-          backgroundColor: GridColors.containerHigh,
+          backgroundColor: Colors.orange,
         ),
       );
       return;
@@ -160,7 +159,6 @@ class _FormBetState extends State<FormBet> {
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   maxLength: 2,
                   style: GridTypography.oddsLg(),
-                  cursorColor: GridColors.lime,
                   decoration: const InputDecoration(hintText: 'POSICIÓN'),
                 ),
               ],
@@ -198,24 +196,12 @@ class _FormBetState extends State<FormBet> {
             controller: betSainz,
           ),
 
-          // button send bet (panel de cristal "betting slip", ver DESIGN.md)
-          GlassContainer(
-            padding: const EdgeInsets.all(GridSpacing.gutter),
-            border: Border.all(color: GridColors.outlineVariant),
-            child: Column(
-              children: [
-                const DiagonalAccent(color: GridColors.limeDim, width: 96),
-                const SizedBox(height: GridSpacing.gutter),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _submitBet,
-                    child: Text(
-                      _isExists ? 'ACTUALIZAR APUESTA' : 'ENVIAR APUESTA',
-                    ),
-                  ),
-                ),
-              ],
+          // button send bet
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: _submitBet,
+              child: Text(_isExists ? 'ACTUALIZAR APUESTA' : 'ENVIAR APUESTA'),
             ),
           ),
         ],
