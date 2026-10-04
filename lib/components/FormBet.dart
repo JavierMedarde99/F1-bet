@@ -201,7 +201,7 @@ class _FormBetState extends State<FormBet> {
           // button send bet (panel de cristal "betting slip", ver DESIGN.md)
           GlassContainer(
             padding: const EdgeInsets.all(GridSpacing.gutter),
-            border: const Border.all(color: GridColors.outlineVariant),
+            border: Border.all(color: GridColors.outlineVariant),
             child: Column(
               children: [
                 const DiagonalAccent(color: GridColors.limeDim, width: 96),
