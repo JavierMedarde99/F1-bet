@@ -37,6 +37,7 @@ class _FormloginState extends State<Formlogin> {
         TextField(
           controller: usuarioController,
           style: GridTypography.dataMono(),
+          cursorColor: GridColors.lime,
         ),
         const SizedBox(height: GridSpacing.gutter),
         Text('CONTRASEÑA', style: GridTypography.labelCaps()),
@@ -45,6 +46,7 @@ class _FormloginState extends State<Formlogin> {
           controller: passwordController,
           obscureText: true, // to input password
           style: GridTypography.dataMono(),
+          cursorColor: GridColors.lime,
         ),
         const SizedBox(height: GridSpacing.margin),
         ElevatedButton(
@@ -57,7 +59,7 @@ class _FormloginState extends State<Formlogin> {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Por favor, rellena todos los campos'),
-                  backgroundColor: Colors.orange,
+                  backgroundColor: GridColors.containerHigh,
                 ),
               );
               return;

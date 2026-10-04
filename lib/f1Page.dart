@@ -1,4 +1,5 @@
 import 'package:f1/components/listRaces.dart';
+import 'package:f1/components/grid_decor.dart';
 import 'package:f1/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -20,13 +21,9 @@ class F1page extends StatelessWidget {
               color: GridColors.lime,
             ),
             const SizedBox(width: 12),
-            const Text(
+            Text(
               'F1 ALL RACES',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                fontStyle: FontStyle.italic,
-              ),
+              style: GridTypography.headlineLgMobile(color: GridColors.lime),
             ),
           ],
         ),
@@ -46,9 +43,16 @@ class F1page extends StatelessWidget {
             decoration: BoxDecoration(
               border: Border.all(color: GridColors.lime),
             ),
-            child: Text(
-              '${DateTime.now().year}',
-              style: GridTypography.dataMono(color: GridColors.lime),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const LiveDot(size: 6, color: GridColors.lime),
+                const SizedBox(width: GridSpacing.unit * 2),
+                Text(
+                  '${DateTime.now().year}',
+                  style: GridTypography.dataMono(color: GridColors.lime),
+                ),
+              ],
             ),
           ),
         ],

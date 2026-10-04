@@ -113,6 +113,18 @@ class _ListRacesState extends State<ListRaces> {
     }
   }
 
+  // Acento de estado de la tarjeta según la fase de la carrera
+  Color accentFor(CircuitsState state) {
+    switch (state) {
+      case CircuitsState.result:
+        return GridColors.rossoCorsa;
+      case CircuitsState.bet:
+        return GridColors.lime;
+      case CircuitsState.future:
+        return GridColors.outlineVariant;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -131,6 +143,7 @@ class _ListRacesState extends State<ListRaces> {
 
                   return Cardpage(
                     key: ValueKey(circuit.meetingId),
+                    accent: accentFor(circuit.state),
                     image: Image.network(
                       circuit.imagen,
                       height: double.infinity,
@@ -143,7 +156,7 @@ class _ListRacesState extends State<ListRaces> {
                         return const Icon(
                           Icons.error_outline,
                           size: 48,
-                          color: Colors.grey,
+                          color: GridColors.outline,
                         );
                       },
                     ),

@@ -22,7 +22,7 @@ class Resultpage extends StatelessWidget {
               color: GridColors.lime,
             ),
             const SizedBox(width: 12),
-            const Text('RESULTADOS'),
+            Text('RESULTADOS', style: GridTypography.headlineLgMobile()),
           ],
         ),
       ),
