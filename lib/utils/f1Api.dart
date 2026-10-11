@@ -63,39 +63,17 @@ Future<List<Circuit>> getCircuits() async {
         // equivale a date_end - 3 días. A partir del viernes pasa a RESULTADOS.
         final dateEnd = DateTime.parse(circuit['date_end']).toUtc();
         final jueves = dateEnd.subtract(const Duration(days: 3));
-        final int difference = _daysFromToday(jueves);
+        final int difference = daysFromToday(jueves);
 
-        if (difference < 0) {
-          circuits.add(
-            Circuit(
-              circuit['meeting_name'],
-              circuit['country_flag'],
-              circuit['meeting_key'],
-              CircuitsState.result,
-              dateEnd: dateEnd,
-            ),
-          );
-        } else if (difference < 7) {
-          circuits.add(
-            Circuit(
-              circuit['meeting_name'],
-              circuit['country_flag'],
-              circuit['meeting_key'],
-              CircuitsState.bet,
-              dateEnd: dateEnd,
-            ),
-          );
-        } else {
-          circuits.add(
-            Circuit(
-              circuit['meeting_name'],
-              circuit['country_flag'],
-              circuit['meeting_key'],
-              CircuitsState.future,
-              dateEnd: dateEnd,
-            ),
-          );
-        }
+        circuits.add(
+          Circuit(
+            circuit['meeting_name'],
+            circuit['country_flag'],
+            circuit['meeting_key'],
+            classifyCircuitState(difference),
+            dateEnd: dateEnd,
+          ),
+        );
       }
     }
   } else {
@@ -108,11 +86,24 @@ Future<List<Circuit>> getCircuits() async {
 // Días desde hoy hasta [date], normalizando ambos a medianoche UTC para que
 // la clasificación no dependa de la zona horaria del dispositivo.
 // Devuelve un valor negativo si [date] ya pasó hoy.
-int _daysFromToday(DateTime date) {
+int daysFromToday(DateTime date) {
   final now = DateTime.now().toUtc();
   final today = DateTime.utc(now.year, now.month, now.day);
   final day = DateTime.utc(date.year, date.month, date.day);
   return day.difference(today).inDays;
+}
+
+// Clasifica una carrera según los días que faltan para el cierre de apuestas
+// (el jueves de la semana de la carrera): negativo = ya disputada
+// (resultados), menos de una semana = apuestas abiertas, el resto = futura.
+CircuitsState classifyCircuitState(int daysUntilClose) {
+  if (daysUntilClose < 0) {
+    return CircuitsState.result;
+  }
+  if (daysUntilClose < 7) {
+    return CircuitsState.bet;
+  }
+  return CircuitsState.future;
 }
 
 // We removed the Preseason races because there are no bets on those types of races.
@@ -143,18 +134,25 @@ Future<int> getResultsByDriver(String sessionId, int driverId) async {
   final response = _checkLiveSessionBlock(await _getWithTimeout(url));
   if (response.statusCode == 200) {
     JsonDecoder decoder = const JsonDecoder();
-    var data = decoder.convert(response.body);
-    if (data.length == 0) {
-      return -1; // No hay resultados para este piloto
-    }
-    if (data[0]['position'] == null) {
-      return -2; // El piloto no terminó la carrera o no tiene posición asignada
-    }
-    return data[0]['position'];
+    return parseDriverPosition(decoder.convert(response.body));
   } else {
     print("error to get results by driver: ${response.statusCode}");
     throw Exception('Failed to load results by driver');
   }
+}
+
+// Interpreta la respuesta de resultados de un piloto:
+// -1 si no hay datos, -2 si no terminó (posición nula), o la posición final.
+int parseDriverPosition(Object? decoded) {
+  final data = decoded as List<dynamic>;
+  if (data.isEmpty) {
+    return -1; // No hay resultados para este piloto
+  }
+  final position = data[0]['position'];
+  if (position == null) {
+    return -2; // El piloto no terminó la carrera o no tiene posición asignada
+  }
+  return position as int;
 }
 
 // We obtain the race ID
@@ -168,9 +166,15 @@ Future<int> getRace(int meetingKey) async {
     if (data.isEmpty) {
       throw Exception('No sessions found for meeting $meetingKey');
     }
-    return data[data.length - 1]['session_key'];
+    return parseRaceSessionKey(data);
   } else {
     print("error to get races: ${response.statusCode}");
     throw Exception('Failed to load races');
   }
+}
+
+// Devuelve la session_key de la carrera: la última sesión del meeting
+// (las anteriores son libres, clasificación, sprint...).
+int parseRaceSessionKey(List<dynamic> data) {
+  return data[data.length - 1]['session_key'] as int;
 }
