@@ -3,6 +3,40 @@ import 'package:f1/models/resultTable.dart';
 import 'package:f1/utils/theme.dart';
 import 'package:flutter/material.dart';
 
+// Error absoluto total de una apuesta: |real - apuesta| para Alonso y Sainz.
+int betError({
+  required int realAlonso,
+  required int realSainz,
+  required int betAlonso,
+  required int betSainz,
+}) {
+  return (realAlonso - betAlonso).abs() + (realSainz - betSainz).abs();
+}
+
+// Construye la tabla ordenada de mayor a menor error (el "ganador" primero).
+List<ResultTable> buildResultTable(Results results) {
+  final list = results.resultsUser
+      .map(
+        (result) => ResultTable(
+          name: result.name,
+          positionAlonso: result.alonsoPosition,
+          positionSainz: result.sainzPosition,
+          totalDifference: betError(
+            realAlonso: results.resultsRaces.alonsoPositionBet,
+            realSainz: results.resultsRaces.sainzPositionBet,
+            betAlonso: result.alonsoPosition,
+            betSainz: result.sainzPosition,
+          ),
+        ),
+      )
+      .toList();
+
+  // La mayor diferencia se muestra primero (orden descendente)
+  list.sort((a, b) => b.totalDifference.compareTo(a.totalDifference));
+
+  return list;
+}
+
 class TableResults extends StatefulWidget {
   final Results results;
 
@@ -13,39 +47,7 @@ class TableResults extends StatefulWidget {
 }
 
 class _TableResultsState extends State<TableResults> {
-  int getDifference(
-    int alonsoPosition,
-    int sainzPosition,
-    int alonsoPositionBet,
-    int sainzPositionBet,
-  ) {
-    int differenceAlonso = (alonsoPositionBet - alonsoPosition).abs();
-    int differenceSainz = (sainzPositionBet - sainzPosition).abs();
-    return differenceAlonso + differenceSainz;
-  }
-
-  List<ResultTable> get resultTable {
-    final list = widget.results.resultsUser
-        .map(
-          (result) => ResultTable(
-            name: result.name,
-            positionAlonso: result.alonsoPosition,
-            positionSainz: result.sainzPosition,
-            totalDifference: getDifference(
-              widget.results.resultsRaces.alonsoPositionBet,
-              widget.results.resultsRaces.sainzPositionBet,
-              result.alonsoPosition,
-              result.sainzPosition,
-            ),
-          ),
-        )
-        .toList();
-
-    // La mayor diferencia se muestra primero (orden descendente)
-    list.sort((a, b) => b.totalDifference.compareTo(a.totalDifference));
-
-    return list;
-  }
+  List<ResultTable> get resultTable => buildResultTable(widget.results);
 
   @override
   Widget build(BuildContext context) {

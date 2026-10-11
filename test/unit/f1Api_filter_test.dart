@@ -31,5 +31,20 @@ void main() {
         isTrue,
       );
     });
+
+    test('incluye nombres con mayúsculas o minúsculas distintas', () {
+      // El filtro es sensible a mayúsculas: solo excluye "Pre-Season" exacto.
+      expect(
+        filterCircuits('pre-season testing', DateTime(2026, 2, 20)),
+        isTrue,
+      );
+    });
+
+    test('excluye cuando Pre-Season aparece dentro del nombre', () {
+      expect(
+        filterCircuits('2026 Pre-Season Test', DateTime(2026, 1, 1)),
+        isFalse,
+      );
+    });
   });
 }
